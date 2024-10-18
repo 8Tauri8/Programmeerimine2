@@ -1,13 +1,18 @@
-﻿namespace KooliProjekt.Data
+﻿using System.ComponentModel.DataAnnotations;
+namespace KooliProjekt.Data
 {
     public class Patient
     {
-        public int UserID { get; set; }
+        public int PatientID { get; set; }
 
+        [Required]
+        [StringLength(25)]
         public string Name { get; set; }
 
-        //     public Health_data Health_data { get; set; }
+        [Required]
+        public HealthData HealthData { get; set; }
 
-        //     public Nutrition Nutrition { get; set; }
+        [Required]
+        public Nutrition Nutrition { get; set; }
     }
 }
