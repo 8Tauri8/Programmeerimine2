@@ -4,7 +4,7 @@ namespace KooliProjekt.Data
 {
     public class HealthData
     {
-        public int HealthDataID { get; set; }
+        public int id { get; set; }
 
         [Required]
         public float Weight { get; set; }

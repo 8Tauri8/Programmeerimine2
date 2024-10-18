@@ -4,7 +4,7 @@ namespace KooliProjekt.Data
 {
     public class Quantity
     {
-        public int QuantityID { get; set; }
+        public int id { get; set; }
 
         [Required]
         public Nutrients Nutrients { get; set; }

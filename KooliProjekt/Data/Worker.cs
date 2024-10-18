@@ -4,7 +4,7 @@ namespace KooliProjekt.Data
 {
     public class Worker
     {
-        public int WorkerID { get; set; }
+        public int id { get; set; }
 
         [Required]
         [StringLength(25)]

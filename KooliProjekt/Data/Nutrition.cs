@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 namespace KooliProjekt.Data
 {
     public class Nutrition
     {
-        public int NutritionID { get; set; }
+        public int id { get; set; }
 
         [Required]
         public DateTime Eating_time { get; set; }

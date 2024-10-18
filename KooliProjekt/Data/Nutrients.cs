@@ -4,7 +4,7 @@ namespace KooliProjekt.Data
     public class Nutrients
     {
 
-        public int NutrientsID { get; set; }
+        public int id { get; set; }
 
         [Required]
         public string Name { get; set; }

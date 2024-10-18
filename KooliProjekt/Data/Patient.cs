@@ -3,7 +3,7 @@ namespace KooliProjekt.Data
 {
     public class Patient
     {
-        public int PatientID { get; set; }
+        public int id { get; set; }
 
         [Required]
         [StringLength(25)]
