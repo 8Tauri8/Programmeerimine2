@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace KooliProjekt.Data.Migrations
+namespace KooliProjekt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241018082255_initialdb")]
-    partial class initialdb
+    [Migration("20241108085811_HealthDataTable")]
+    partial class HealthDataTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
