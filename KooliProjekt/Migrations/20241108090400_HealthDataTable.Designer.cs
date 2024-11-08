@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KooliProjekt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241108085811_HealthDataTable")]
+    [Migration("20241108090400_HealthDataTable")]
     partial class HealthDataTable
     {
         /// <inheritdoc />
