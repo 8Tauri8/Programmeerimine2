@@ -10,9 +10,9 @@ namespace KooliProjekt.Data
         public DateTime Eating_time { get; set; }
 
         [Required]
-        public Nutrients Nutrients { get; set; }
+        public float Nutrients { get; set; }
 
         [Required]
-        public Quantity Quantity { get; set; }
+        public float Quantity { get; set; }
     }
 }
