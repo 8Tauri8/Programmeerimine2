@@ -22,6 +22,15 @@ namespace KooliProjekt
 
             var app = builder.Build();
 
+            // Seemenda andmebaas ainult Debug reþiimis
+#if DEBUG
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                SeedData.Generate(dbContext); // kutsume SeedData.Generate meetodi
+            }
+#endif
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
