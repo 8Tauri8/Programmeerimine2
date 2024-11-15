@@ -1,15 +1,15 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
+using System;
 using System.Linq;
 
 public static class SeedData
 {
     public static void Generate(ApplicationDbContext dbContext)
     {
-        // Kontrollige, kas HealthData tabelis on andmeid
+        // Seed HealthData if the table is empty
         if (!dbContext.HealthData.Any())
         {
-            // Kui ei ole, lisame vähemalt 10 terviseandmete rida
             dbContext.HealthData.AddRange(
                 new HealthData { Weight = 60, Blood_pressure = 120, Blood_sugar = 70 },
                 new HealthData { Weight = 65, Blood_pressure = 115, Blood_sugar = 72 },
@@ -24,10 +24,9 @@ public static class SeedData
             );
         }
 
-        // Kontrollige, kas Nutrients tabelis on andmeid
+        // Seed Nutrients if the table is empty
         if (!dbContext.Nutrients.Any())
         {
-            // Kui ei ole, lisame vähemalt 10 toitaineandmeid
             dbContext.Nutrients.AddRange(
                 new Nutrients { Name = "Siim", Sugar = 75, Fat = 70, Carbohydrates = 59 },
                 new Nutrients { Name = "Kati", Sugar = 55, Fat = 40, Carbohydrates = 60 },
@@ -42,10 +41,9 @@ public static class SeedData
             );
         }
 
-        // Kontrollige, kas Nutrition tabelis on andmeid
+        // Seed Nutrition if the table is empty
         if (!dbContext.Nutrition.Any())
         {
-            // Kui ei ole, lisame vähemalt 10 toitumise andmeid
             dbContext.Nutrition.AddRange(
                 new Nutrition { Eating_time = new DateTime(2024, 12, 25), Nutrients = 12, Quantity = 10 },
                 new Nutrition { Eating_time = new DateTime(2024, 12, 26), Nutrients = 22, Quantity = 12 },
@@ -60,7 +58,31 @@ public static class SeedData
             );
         }
 
-        // Salvestame muudatused andmebaasi
+        // Seed Patients if the table is empty
+        if (!dbContext.Patient.Any())
+        {
+            dbContext.Patient.AddRange(
+                new Patient { Name = "MARKUS VILISALU", HealthData = "good health", Nutrition = "ore carbs" },
+                new Patient { Name = "Siim", HealthData = "stable", Nutrition = "high sugar" },
+                new Patient { Name = "Kati", HealthData = "good health", Nutrition = "balanced" },
+                new Patient { Name = "Mati", HealthData = "average", Nutrition = "high carbs" },
+                new Patient { Name = "Mari", HealthData = "good health", Nutrition = "low fat" }
+            );
+        }
+
+        // Seed Workers if the table is empty
+        if (!dbContext.Worker.Any())
+        {
+            dbContext.Worker.AddRange(
+                new Worker { Name = "MARKUS VILISALU", HealthData = "good health", Nutrition = "ore carbs" },
+                new Worker { Name = "Kati", HealthData = "stable", Nutrition = "low fat" },
+                new Worker { Name = "Mati", HealthData = "average", Nutrition = "high protein" },
+                new Worker { Name = "Mari", HealthData = "good health", Nutrition = "balanced" },
+                new Worker { Name = "Jüri", HealthData = "high stress", Nutrition = "low sugar" }
+            );
+        }
+
+        // Save all changes to the database
         dbContext.SaveChanges();
     }
 }

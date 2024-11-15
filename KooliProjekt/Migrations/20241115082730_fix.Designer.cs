@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KooliProjekt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241108090400_HealthDataTable")]
-    partial class HealthDataTable
+    [Migration("20241115082730_fix")]
+    partial class fix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,17 +84,13 @@ namespace KooliProjekt.Migrations
                     b.Property<DateTime>("Eating_time")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Nutrientsid")
-                        .HasColumnType("int");
+                    b.Property<float>("Nutrients")
+                        .HasColumnType("real");
 
-                    b.Property<int>("Quantityid")
-                        .HasColumnType("int");
+                    b.Property<float>("Quantity")
+                        .HasColumnType("real");
 
                     b.HasKey("id");
-
-                    b.HasIndex("Nutrientsid");
-
-                    b.HasIndex("Quantityid");
 
                     b.ToTable("Nutrition");
                 });
@@ -377,25 +373,6 @@ namespace KooliProjekt.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("KooliProjekt.Data.Nutrition", b =>
-                {
-                    b.HasOne("KooliProjekt.Data.Nutrients", "Nutrients")
-                        .WithMany()
-                        .HasForeignKey("Nutrientsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("KooliProjekt.Data.Quantity", "Quantity")
-                        .WithMany()
-                        .HasForeignKey("Quantityid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Nutrients");
-
-                    b.Navigation("Quantity");
                 });
 
             modelBuilder.Entity("KooliProjekt.Data.Patient", b =>
