@@ -7,10 +7,10 @@ namespace KooliProjekt.Data
         public int id { get; set; }
 
         [Required]
-        public Nutrients Nutrients { get; set; }
+        public float Nutrients { get; set; }
 
         [Required]
-        public string Amount { get; set; }
+        public float Amount { get; set; }
     }
 }
     

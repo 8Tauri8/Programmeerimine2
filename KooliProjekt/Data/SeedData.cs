@@ -66,19 +66,29 @@ public static class SeedData
                 new Patient { Name = "Siim", HealthData = "stable", Nutrition = "high sugar" },
                 new Patient { Name = "Kati", HealthData = "good health", Nutrition = "balanced" },
                 new Patient { Name = "Mati", HealthData = "average", Nutrition = "high carbs" },
-                new Patient { Name = "Mari", HealthData = "good health", Nutrition = "low fat" }
+                new Patient { Name = "Mari", HealthData = "good health", Nutrition = "low fat" },
+                new Patient { Name = "Tõnu", HealthData = "excellent", Nutrition = "high protein" },
+                new Patient { Name = "Liis", HealthData = "good health", Nutrition = "balanced" },
+                new Patient { Name = "Jüri", HealthData = "high stress", Nutrition = "low sugar" },
+                new Patient { Name = "Olev", HealthData = "good health", Nutrition = "medium carb" },
+                new Patient { Name = "Ene", HealthData = "healthy", Nutrition = "low sugar" }
             );
         }
 
-        // Seed Workers if the table is empty
-        if (!dbContext.Worker.Any())
+        // Seed Quantity if the table is empty (assuming 'Quantity' refers to Worker related data)
+        if (!dbContext.Quantity.Any())
         {
-            dbContext.Worker.AddRange(
-                new Worker { Name = "MARKUS VILISALU", HealthData = "good health", Nutrition = "ore carbs" },
-                new Worker { Name = "Kati", HealthData = "stable", Nutrition = "low fat" },
-                new Worker { Name = "Mati", HealthData = "average", Nutrition = "high protein" },
-                new Worker { Name = "Mari", HealthData = "good health", Nutrition = "balanced" },
-                new Worker { Name = "Jüri", HealthData = "high stress", Nutrition = "low sugar" }
+            dbContext.Quantity.AddRange(
+                new Quantity { Nutrients = 25, Amount = 2 },
+                new Quantity { Nutrients = 37, Amount = 4 },
+                new Quantity { Nutrients = 54, Amount = 3 },
+                new Quantity { Nutrients = 62, Amount = 7 },
+                new Quantity { Nutrients = 78, Amount = 1 },
+                new Quantity { Nutrients = 99, Amount = 2 },
+                new Quantity { Nutrients = 56, Amount = 5 },
+                new Quantity { Nutrients = 21, Amount = 8 },
+                new Quantity { Nutrients = 42, Amount = 9 },
+                new Quantity { Nutrients = 83, Amount = 6 }
             );
         }
 
