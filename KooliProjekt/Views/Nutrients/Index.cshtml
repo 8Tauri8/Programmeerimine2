@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KooliProjekt.Data.Nutrients>
+﻿@model PagedResult<KooliProjekt.Data.Nutrients>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,23 +12,15 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sugar)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fat)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Carbohydrates)
-            </th>
-            <th></th>
+            <th>Name</th>
+            <th>Sugar</th>
+            <th>Fat</th>
+            <th>Carbohydrates</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model.Results)
+        {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
@@ -51,3 +43,4 @@
 }
     </tbody>
 </table>
+@(await Component.InvokeAsync<PagerViewComponent>(Model))

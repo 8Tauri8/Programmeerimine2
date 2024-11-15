@@ -12,9 +12,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Title</th>
-            <th>Title</th>
-            <th>Title</th>
+            <th>Weight</th>
+            <th>Blood_pressure</th>
+            <th>Blood_sugar</th>
         </tr>
     </thead>
     <tbody>
@@ -38,3 +38,5 @@
 }
     </tbody>
 </table>
+
+@(await Component.InvokeAsync<PagerViewComponent>(Model))

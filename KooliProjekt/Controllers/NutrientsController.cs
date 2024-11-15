@@ -19,9 +19,9 @@ namespace KooliProjekt.Controllers
         }
 
         // GET: Nutrients
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Nutrients.ToListAsync());
+            return View(await _context.Nutrients.GetPagedAsync(page, 5));
         }
 
         // GET: Nutrients/Details/5
