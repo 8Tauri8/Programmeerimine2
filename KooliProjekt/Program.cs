@@ -1,4 +1,5 @@
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,15 @@ namespace KooliProjekt
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+
+            builder.Services.AddScoped<IHealthDataService, HealthDataService>();
+            builder.Services.AddScoped<INutrientsService, NutrientsService>();
+            builder.Services.AddScoped<IPatientService, PatientService>();
+            builder.Services.AddScoped<INutritionService, NutritionService>();
+            builder.Services.AddScoped<IQuantityService, QuantityService>();
+
+
 
             var app = builder.Build();
 
