@@ -11,17 +11,17 @@ namespace KooliProjekt.Controllers
 {
     public class QuantitiesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext QuantityService;
 
         public QuantitiesController(ApplicationDbContext context)
         {
-            _context = context;
+            QuantityService = context;
         }
 
         // GET: Quantities
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Quantity.GetPagedAsync(page, 5));
+            return View(await QuantityService.Quantity.GetPagedAsync(page, 5));
         }
 
         // GET: Quantities/Details/5
@@ -32,7 +32,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await _context.Quantity
+            var quantity = await QuantityService.Quantity
                 .FirstOrDefaultAsync(m => m.id == id);
             if (quantity == null)
             {
@@ -57,8 +57,8 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(quantity);
-                await _context.SaveChangesAsync();
+                QuantityService.Add(quantity);
+                await QuantityService.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(quantity);
@@ -72,7 +72,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await _context.Quantity.FindAsync(id);
+            var quantity = await QuantityService.Quantity.FindAsync(id);
             if (quantity == null)
             {
                 return NotFound();
@@ -96,8 +96,8 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(quantity);
-                    await _context.SaveChangesAsync();
+                    QuantityService.Update(quantity);
+                    await QuantityService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +123,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await _context.Quantity
+            var quantity = await QuantityService.Quantity
                 .FirstOrDefaultAsync(m => m.id == id);
             if (quantity == null)
             {
@@ -138,19 +138,19 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var quantity = await _context.Quantity.FindAsync(id);
+            var quantity = await QuantityService.Quantity.FindAsync(id);
             if (quantity != null)
             {
-                _context.Quantity.Remove(quantity);
+                QuantityService.Quantity.Remove(quantity);
             }
 
-            await _context.SaveChangesAsync();
+            await QuantityService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool QuantityExists(int id)
         {
-            return _context.Quantity.Any(e => e.id == id);
+            return QuantityService.Quantity.Any(e => e.id == id);
         }
     }
 }

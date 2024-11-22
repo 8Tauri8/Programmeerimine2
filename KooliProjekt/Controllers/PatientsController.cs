@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext PatientService;
 
         public PatientsController(ApplicationDbContext context)
         {
-            _context = context;
+            PatientService = context;
         }
 
         // GET: Patients
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Patient.GetPagedAsync(page, 5));
+            return View(await PatientService.Patient.GetPagedAsync(page, 5));
         }
 
         // GET: Patients/Details/5
@@ -32,7 +33,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patient
+            var patient = await PatientService.Patient
                 .FirstOrDefaultAsync(m => m.id == id);
             if (patient == null)
             {
@@ -57,8 +58,8 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(patient);
-                await _context.SaveChangesAsync();
+                PatientService.Add(patient);
+                await PatientService.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
@@ -72,7 +73,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patient.FindAsync(id);
+            var patient = await PatientService.Patient.FindAsync(id);
             if (patient == null)
             {
                 return NotFound();
@@ -96,8 +97,8 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(patient);
-                    await _context.SaveChangesAsync();
+                    PatientService.Update(patient);
+                    await PatientService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +124,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await _context.Patient
+            var patient = await PatientService.Patient
                 .FirstOrDefaultAsync(m => m.id == id);
             if (patient == null)
             {
@@ -138,19 +139,19 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var patient = await _context.Patient.FindAsync(id);
+            var patient = await PatientService.Patient.FindAsync(id);
             if (patient != null)
             {
-                _context.Patient.Remove(patient);
+                PatientService.Patient.Remove(patient);
             }
 
-            await _context.SaveChangesAsync();
+            await PatientService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PatientExists(int id)
         {
-            return _context.Patient.Any(e => e.id == id);
+            return PatientService.Patient.Any(e => e.id == id);
         }
     }
 }

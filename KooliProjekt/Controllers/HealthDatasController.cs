@@ -11,17 +11,17 @@ namespace KooliProjekt.Controllers
 {
     public class HealthDatasController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext HealthDataService;
 
         public HealthDatasController(ApplicationDbContext context)
         {
-            _context = context;
+            HealthDataService = context;
         }
 
         // GET: HealthDatas
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.HealthData.GetPagedAsync(page, 5));
+            return View(await HealthDataService.HealthData.GetPagedAsync(page, 5));
         }
 
         // GET: HealthDatas/Details/5
@@ -32,7 +32,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await _context.HealthData
+            var healthData = await HealthDataService.HealthData
                 .FirstOrDefaultAsync(m => m.id == id);
             if (healthData == null)
             {
@@ -57,8 +57,8 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(healthData);
-                await _context.SaveChangesAsync();
+                HealthDataService.Add(healthData);
+                await HealthDataService.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(healthData);
@@ -72,7 +72,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await _context.HealthData.FindAsync(id);
+            var healthData = await HealthDataService.HealthData.FindAsync(id);
             if (healthData == null)
             {
                 return NotFound();
@@ -96,8 +96,8 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(healthData);
-                    await _context.SaveChangesAsync();
+                    HealthDataService.Update(healthData);
+                    await HealthDataService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +123,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await _context.HealthData
+            var healthData = await HealthDataService.HealthData
                 .FirstOrDefaultAsync(m => m.id == id);
             if (healthData == null)
             {
@@ -138,19 +138,19 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var healthData = await _context.HealthData.FindAsync(id);
+            var healthData = await HealthDataService.HealthData.FindAsync(id);
             if (healthData != null)
             {
-                _context.HealthData.Remove(healthData);
+                HealthDataService.HealthData.Remove(healthData);
             }
 
-            await _context.SaveChangesAsync();
+            await HealthDataService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool HealthDataExists(int id)
         {
-            return _context.HealthData.Any(e => e.id == id);
+            return HealthDataService.HealthData.Any(e => e.id == id);
         }
     }
 }

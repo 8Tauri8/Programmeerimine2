@@ -11,17 +11,17 @@ namespace KooliProjekt.Controllers
 {
     public class NutrientsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext NutrientsService;
 
         public NutrientsController(ApplicationDbContext context)
         {
-            _context = context;
+            NutrientsService = context;
         }
 
         // GET: Nutrients
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Nutrients.GetPagedAsync(page, 5));
+            return View(await NutrientsService.Nutrients.GetPagedAsync(page, 5));
         }
 
         // GET: Nutrients/Details/5
@@ -32,7 +32,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await _context.Nutrients
+            var nutrients = await NutrientsService.Nutrients
                 .FirstOrDefaultAsync(m => m.id == id);
             if (nutrients == null)
             {
@@ -57,8 +57,8 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(nutrients);
-                await _context.SaveChangesAsync();
+                NutrientsService.Add(nutrients);
+                await NutrientsService.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(nutrients);
@@ -72,7 +72,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await _context.Nutrients.FindAsync(id);
+            var nutrients = await NutrientsService.Nutrients.FindAsync(id);
             if (nutrients == null)
             {
                 return NotFound();
@@ -96,8 +96,8 @@ namespace KooliProjekt.Controllers
             {
                 try
                 {
-                    _context.Update(nutrients);
-                    await _context.SaveChangesAsync();
+                    NutrientsService.Update(nutrients);
+                    await NutrientsService.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +123,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await _context.Nutrients
+            var nutrients = await NutrientsService.Nutrients
                 .FirstOrDefaultAsync(m => m.id == id);
             if (nutrients == null)
             {
@@ -138,19 +138,19 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var nutrients = await _context.Nutrients.FindAsync(id);
+            var nutrients = await NutrientsService.Nutrients.FindAsync(id);
             if (nutrients != null)
             {
-                _context.Nutrients.Remove(nutrients);
+                NutrientsService.Nutrients.Remove(nutrients);
             }
 
-            await _context.SaveChangesAsync();
+            await NutrientsService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool NutrientsExists(int id)
         {
-            return _context.Nutrients.Any(e => e.id == id);
+            return NutrientsService.Nutrients.Any(e => e.id == id);
         }
     }
 }
