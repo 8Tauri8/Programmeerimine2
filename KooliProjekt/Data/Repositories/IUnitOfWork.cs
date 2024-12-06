@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace KooliProjekt.Data.Repositories
+﻿namespace KooliProjekt.Data.Repositories
 {
-    public class IUnitOfWork : Controller
+    public interface IUnitOfWork
     {
+        // Repository-dele ligipääs
+        IHealthDataRepository HealthDataRepository { get; }
+        INutrientsRepository NutrientsRepository { get; }
+        INutritionRepository NutritionRepository { get; }
+        IPatientRepository PatientRepository { get; }
+        IQuantityRepository QuantityRepository { get; }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+        // Transaktsiooni haldamise meetodid
+        Task BeginTransaction();
+        Task Commit();
+        Task Rollback();
     }
 }

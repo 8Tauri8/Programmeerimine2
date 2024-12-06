@@ -1,9 +1,11 @@
 using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Services;
+
 
 namespace KooliProjekt.Services
 {
-    public class HealthDataService : IHealthDataService
+    public class HealthDataService : IHealthDataRepository
     {
         private readonly ApplicationDbContext _context;
 

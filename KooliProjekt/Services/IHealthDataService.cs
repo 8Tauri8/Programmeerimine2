@@ -1,8 +1,8 @@
 using KooliProjekt.Data;
-
+using KooliProjekt.Services;
 namespace KooliProjekt.Services
 {
-    public interface IHealthDataService
+    public interface IHealthRepository
     {
         Task<PagedResult<HealthData>> List(int page, int pageSize);
         Task<HealthData> Get(int id);
