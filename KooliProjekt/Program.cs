@@ -35,7 +35,6 @@ namespace KooliProjekt
 
             var app = builder.Build();
 
-            // Seemenda andmebaas ainult Debug reþiimis
 #if DEBUG
             using (var scope = app.Services.CreateScope())
             {
