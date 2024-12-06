@@ -2,7 +2,7 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Services
 {
-    public interface INutrientsService
+    public interface NutrientsRepository
     {
         Task<PagedResult<Nutrients>> List(int page, int pageSize);
         Task<Nutrients> Get(int id);

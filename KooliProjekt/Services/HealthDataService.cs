@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class HealthDataService : IHealthDataService
+    public class HealthDataService : IHealthDataRepository
     {
         private readonly IHealthDataRepository _healthDataRepository;
 

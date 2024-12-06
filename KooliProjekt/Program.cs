@@ -1,4 +1,5 @@
 using KooliProjekt.Data;
+using KooliProjekt.Data.Repositories;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +25,12 @@ namespace KooliProjekt
 
 
             builder.Services.AddScoped<IHealthDataService, HealthDataService>();
-            builder.Services.AddScoped<INutrientsRepository, NutrientsService>();
+            builder.Services.AddScoped<INutrientsRepository, NutrientsRepository>();
             builder.Services.AddScoped<IPatientRepository, PatientService>();
             builder.Services.AddScoped<INutritionRepository, NutritionService>();
             builder.Services.AddScoped<IQuantityRepository, QuantityService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 
 

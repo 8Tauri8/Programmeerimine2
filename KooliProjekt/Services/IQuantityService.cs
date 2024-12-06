@@ -2,7 +2,7 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Services
 {
-    public interface IQuantityRepository
+    public interface IQuantityService
     {
         Task<PagedResult<Quantity>> List(int page, int pageSize);
         Task<Quantity> Get(int id);

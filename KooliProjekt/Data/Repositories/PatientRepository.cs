@@ -2,7 +2,7 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Services
 {
-    public interface IPatientService
+    public interface PatientRepository
     {
         Task<PagedResult<Patient>> List(int page, int pageSize);
         Task<Patient> Get(int id);

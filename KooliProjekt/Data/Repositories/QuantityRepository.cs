@@ -2,11 +2,11 @@ using KooliProjekt.Data;
 
 namespace KooliProjekt.Services
 {
-    public interface IQuantityService
+    public interface QuantityRepository
     {
-        Task<PagedResult<Quantity>> List(int page, int pageSize);
         Task<Quantity> Get(int id);
-        Task Save(Quantity list);
+        Task<PagedResult<Quantity>> List(int page, int pageSize);
+        Task Save(Quantity item);
         Task Delete(int id);
     }
 }
