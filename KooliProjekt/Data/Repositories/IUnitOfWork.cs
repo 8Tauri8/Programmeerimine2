@@ -4,10 +4,14 @@ namespace KooliProjekt.Data.Repositories
 {
     public class IUnitOfWork : Controller
     {
-
-        public IActionResult Index()
+        private class UnitOfWork : IUnitOfWork
         {
-            return View();
+            private readonly ApplicationDbContext _context;
+
+            public UnitOfWork(ApplicationDbContext context)
+            {
+                _context = context;
+            }
         }
     }
 }

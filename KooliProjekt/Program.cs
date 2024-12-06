@@ -41,7 +41,7 @@ namespace KooliProjekt
                 SeedData.Generate(dbContext); // kutsume SeedData.Generate meetodi
             }
 #endif
-                
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

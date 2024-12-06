@@ -1,9 +1,12 @@
-namespace KooliProjekt.Data.Repositories
+using KooliProjekt.Data;
+
+namespace KooliProjekt.Services
 {
-    public class PatientRepository : BaseRepository<HealthData>
+    public interface IPatientService
     {
-
-        public PatientRepository(ApplicationDbContext context) : base(context) { }
-
+        Task<PagedResult<Patient>> List(int page, int pageSize);
+        Task<Patient> Get(int id);
+        Task Save(Patient list);
+        Task Delete(int id);
     }
 }

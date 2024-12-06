@@ -1,9 +1,12 @@
-namespace KooliProjekt.Data.Repositories
+using KooliProjekt.Data;
+
+namespace KooliProjekt.Services
 {
-    public class NutrientsRepository : BaseRepository<HealthData>
+    public interface INutrientsService
     {
-
-        public NutrientsRepository(ApplicationDbContext context) : base(context) { }
-
+        Task<PagedResult<Nutrients>> List(int page, int pageSize);
+        Task<Nutrients> Get(int id);
+        Task Save(Nutrients list);
+        Task Delete(int id);
     }
 }
