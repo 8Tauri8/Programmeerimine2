@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class NutritionService : INutritionService
+    public class NutritionService : INutritionRepository
     {
         private readonly ApplicationDbContext _context;
 

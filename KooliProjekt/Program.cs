@@ -23,10 +23,10 @@ namespace KooliProjekt
 
 
             builder.Services.AddScoped<IHealthDataService, HealthDataService>();
-            builder.Services.AddScoped<INutrientsService, NutrientsService>();
-            builder.Services.AddScoped<IPatientService, PatientService>();
-            builder.Services.AddScoped<INutritionService, NutritionService>();
-            builder.Services.AddScoped<IQuantityService, QuantityService>();
+            builder.Services.AddScoped<INutrientsRepository, NutrientsService>();
+            builder.Services.AddScoped<IPatientRepository, PatientService>();
+            builder.Services.AddScoped<INutritionRepository, NutritionService>();
+            builder.Services.AddScoped<IQuantityRepository, QuantityService>();
 
 
 

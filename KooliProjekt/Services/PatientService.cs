@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class PatientService : IPatientService
+    public class PatientService : IPatientRepository
     {
         private readonly ApplicationDbContext _context;
 
