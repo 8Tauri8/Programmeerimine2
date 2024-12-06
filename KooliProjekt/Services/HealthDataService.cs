@@ -1,53 +1,36 @@
 using KooliProjekt.Data;
+using KooliProjekt.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using KooliProjekt.Services;
-
 
 namespace KooliProjekt.Services
 {
-    public class HealthDataService : IHealthDataRepository
+    public class HealthDataService : IHealthDataService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IHealthDataRepository _healthDataRepository;
 
-        public HealthDataService(ApplicationDbContext context)
+        public HealthDataService(IHealthDataRepository healthDataRepository)
         {
-            _context = context;
+            _healthDataRepository = healthDataRepository;
         }
 
         public async Task<PagedResult<HealthData>> List(int page, int pageSize)
         {
-            return await _context.HealthData.GetPagedAsync(page, 5);
+            return await _healthDataRepository.List(page, pageSize); // Kasutame repository meetodit
         }
 
         public async Task<HealthData> Get(int id)
         {
-            var result = await _context.HealthData.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new HealthData(); // Returns a default HealthData if null is found
+            return await _healthDataRepository.Get(id); // Kasutame repository meetodit
         }
 
-
-        public async Task Save(HealthData list)
+        public async Task Save(HealthData healthData)
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            await _healthDataRepository.Save(healthData); // Kasutame repository meetodit
         }
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.HealthData.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.HealthData.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+            await _healthDataRepository.Delete(id); // Kasutame repository meetodit
         }
     }
 }
