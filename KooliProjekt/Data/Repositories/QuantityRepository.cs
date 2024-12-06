@@ -1,12 +1,9 @@
-using KooliProjekt.Data;
-
-namespace KooliProjekt.Services
+namespace KooliProjekt.Data.Repositories
 {
-    public interface IQuantityService
+    public class QuantityRepository : BaseRepository<HealthData>
     {
-        Task<PagedResult<Quantity>> List(int page, int pageSize);
-        Task<Quantity> Get(int id);
-        Task Save(Quantity list);
-        Task Delete(int id);
+
+        public QuantityRepository(ApplicationDbContext context) : base(context) { }
+
     }
 }
