@@ -1,17 +1,13 @@
-﻿namespace KooliProjekt.Data.Repositories
-{
-    public interface IUnitOfWork
-    {
-        // Repository-dele ligipääs
-        IHealthDataRepository HealthDataRepository { get; }
-        INutrientsRepository NutrientsRepository { get; }
-        INutritionRepository NutritionRepository { get; }
-        IPatientRepository PatientRepository { get; }
-        IQuantityRepository QuantityRepository { get; }
+﻿using Microsoft.AspNetCore.Mvc;
 
-        // Transaktsiooni haldamise meetodid
-        Task BeginTransaction();
-        Task Commit();
-        Task Rollback();
+namespace KooliProjekt.Data.Repositories
+{
+    public class IUnitOfWork : Controller
+    {
+
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }
