@@ -14,7 +14,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
 {
     public class HealthDataControllerTests
     {
-        private readonly Mock<HealthDataService> _HealthDataServiceMock;
+        private readonly Mock<IHealthDataService> _HealthDataServiceMock;
         private readonly HealthDatasController _controller;
 
         public HealthDataControllerTests()
@@ -22,7 +22,6 @@ namespace KooliProjekt.UnitTests.ControllerTests
             _HealthDataServiceMock = new Mock<IHealthDataService>();
             _controller = new HealthDatasController(_HealthDataServiceMock.Object);
         }
-
         [Fact]
         public async Task Index_should_return_correct_view_with_data()
         {

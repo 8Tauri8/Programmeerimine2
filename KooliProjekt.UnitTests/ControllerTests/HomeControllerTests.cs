@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using Xunit;
-
+ 
 namespace KooliProjekt.UnitTests.ControllerTests
 
 {
@@ -15,7 +15,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
     {
 
         [Fact]
-
+ 
         public void Index_should_return_index_view()
 
         {
@@ -23,11 +23,11 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
 
             var controller = new HomeController();
-
+ 
             // Act
 
             var result = controller.Index() as ViewResult;
-
+ 
             // Assert
 
             Assert.NotNull(result);
@@ -47,11 +47,11 @@ namespace KooliProjekt.UnitTests.ControllerTests
             // Arrange
 
             var controller = new HomeController();
-
+ 
             // Act
 
             var result = controller.Index() as ViewResult;
-
+ 
             // Assert
 
             Assert.NotNull(result);
@@ -75,11 +75,11 @@ namespace KooliProjekt.UnitTests.ControllerTests
             controller.ControllerContext = new ControllerContext();
 
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
-
+ 
             // Act
 
             var result = controller.Index() as ViewResult;
-
+ 
             // Assert
 
             Assert.NotNull(result);
@@ -93,3 +93,4 @@ namespace KooliProjekt.UnitTests.ControllerTests
     }
 
 }
+ 
