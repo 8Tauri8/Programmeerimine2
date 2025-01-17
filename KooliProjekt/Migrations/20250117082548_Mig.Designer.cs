@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KooliProjekt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241115091536_1000")]
-    partial class _1000
+    [Migration("20250117082548_Mig")]
+    partial class Mig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,19 +109,13 @@ namespace KooliProjekt.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nutrition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Workerid")
-                        .HasColumnType("int");
-
                     b.HasKey("id");
-
-                    b.HasIndex("Workerid");
 
                     b.ToTable("Patient");
                 });
@@ -143,29 +137,6 @@ namespace KooliProjekt.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Quantity");
-                });
-
-            modelBuilder.Entity("KooliProjekt.Data.Worker", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)");
-
-                    b.Property<int>("Patientid")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Patientid");
-
-                    b.ToTable("Worker");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -370,24 +341,6 @@ namespace KooliProjekt.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("KooliProjekt.Data.Patient", b =>
-                {
-                    b.HasOne("KooliProjekt.Data.Worker", null)
-                        .WithMany("Patients")
-                        .HasForeignKey("Workerid");
-                });
-
-            modelBuilder.Entity("KooliProjekt.Data.Worker", b =>
-                {
-                    b.HasOne("KooliProjekt.Data.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("Patientid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -437,11 +390,6 @@ namespace KooliProjekt.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("KooliProjekt.Data.Worker", b =>
-                {
-                    b.Navigation("Patients");
                 });
 #pragma warning restore 612, 618
         }
