@@ -29,7 +29,6 @@ namespace KooliProjekt
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<INutritionService, NutritionService>();
             builder.Services.AddScoped<IQuantityService, QuantityService>();
-            //abc
 
 
 
