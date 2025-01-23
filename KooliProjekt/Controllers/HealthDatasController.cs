@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
     public class HealthDatasController : Controller
     {
-        private readonly ApplicationDbContext HealthDataService;
+        private readonly IHealthDataService _HealthDataService;
 
-        public HealthDatasController(ApplicationDbContext context)
+        public HealthDatasController(IHealthDataService HealthDataService)
         {
-            HealthDataService = context;
+            _HealthDataService = HealthDataService;
         }
 
         // GET: HealthDatas
