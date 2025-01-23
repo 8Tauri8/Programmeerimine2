@@ -6,22 +6,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Controllers
 {
     public class NutrientsController : Controller
     {
-        private readonly ApplicationDbContext NutrientsService;
+        private readonly INutrientsService _NutrientsService;
 
-        public NutrientsController(ApplicationDbContext context)
+        public NutrientsController(INutrientsService NutrientsService)
         {
-            NutrientsService = context;
+            _NutrientsService = NutrientsService;
         }
 
-        // GET: Nutrients
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await NutrientsService.Nutrients.GetPagedAsync(page, 5));
+            int pageSize = 5;
+            return View(await _NutrientsService.List(page, pageSize));
         }
 
         // GET: Nutrients/Details/5
@@ -32,14 +33,13 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await NutrientsService.Nutrients
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (nutrients == null)
+            var Nutrients = await _NutrientsService.Get(id.Value);
+            if (Nutrients == null)
             {
                 return NotFound();
             }
 
-            return View(nutrients);
+            return View(Nutrients);
         }
 
         // GET: Nutrients/Create
@@ -57,8 +57,7 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                NutrientsService.Add(nutrients);
-                await NutrientsService.SaveChangesAsync();
+                await _NutrientsService.Save(nutrients);  // Save new food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(nutrients);
@@ -72,7 +71,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await NutrientsService.Nutrients.FindAsync(id);
+            var nutrients = await _NutrientsService.Get(id.Value);
             if (nutrients == null)
             {
                 return NotFound();
@@ -94,24 +93,10 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    NutrientsService.Update(nutrients);
-                    await NutrientsService.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NutrientsExists(nutrients.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _NutrientsService.Save(nutrients);  // Save updated food chart
                 return RedirectToAction(nameof(Index));
             }
+
             return View(nutrients);
         }
 
@@ -123,34 +108,22 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var nutrients = await NutrientsService.Nutrients
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (nutrients == null)
+            var foodChart = await _NutrientsService.Get(id.Value);
+            if (foodChart == null)
             {
                 return NotFound();
             }
 
-            return View(nutrients);
+            return View(foodChart);
         }
 
-        // POST: Nutrients/Delete/5
+        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var nutrients = await NutrientsService.Nutrients.FindAsync(id);
-            if (nutrients != null)
-            {
-                NutrientsService.Nutrients.Remove(nutrients);
-            }
-
-            await NutrientsService.SaveChangesAsync();
+            await _NutrientsService.Delete(id);  // Delete food chart
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool NutrientsExists(int id)
-        {
-            return NutrientsService.Nutrients.Any(e => e.id == id);
         }
     }
 }
