@@ -1,5 +1,4 @@
 using KooliProjekt.Data;
-using KooliProjekt.Data.Repositories;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

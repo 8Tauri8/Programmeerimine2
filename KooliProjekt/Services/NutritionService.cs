@@ -1,10 +1,9 @@
 using KooliProjekt.Data;
-using KooliProjekt.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class NutritionService : INutritionRepository
+    public class NutritionService : INutritionService
     {
         private readonly ApplicationDbContext _context;
 

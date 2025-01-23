@@ -1,10 +1,9 @@
 using KooliProjekt.Data;
-using KooliProjekt.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
-    public class QuantityService : IQuantityRepository
+    public class QuantityService : IQuantityService
     {
         private readonly ApplicationDbContext _context;
 

@@ -9,6 +9,7 @@ namespace KooliProjekt.Data
         [Required]
         public string HealthData { get; set; }
         [Required]
-        public string Nutrition { get; set; }
+        public string 
+            Nutrition { get; set; }
     }
 }
