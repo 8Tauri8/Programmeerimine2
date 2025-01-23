@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿// File: Controllers/FoodChartsController.cs
 using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
@@ -25,7 +23,7 @@ namespace KooliProjekt.Controllers
             return View(await HealthDataService.HealthData.GetPagedAsync(page, 5));
         }
 
-        // GET: HealthDatas/Details/5
+        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +31,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await HealthDataService.HealthData
-                .FirstOrDefaultAsync(m => m.id == id);
+            var healthData = await _HealthDataService.Get(id.Value);
             if (healthData == null)
             {
                 return NotFound();
@@ -43,29 +40,26 @@ namespace KooliProjekt.Controllers
             return View(healthData);
         }
 
-        // GET: HealthDatas/Create
+        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: HealthDatas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HealthDataID,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
+        public async Task<IActionResult> Create([Bind("InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] healthData healthData)
         {
             if (ModelState.IsValid)
             {
-                HealthDataService.Add(healthData);
-                await HealthDataService.SaveChangesAsync();
+                await _HealthDataService.Save(healthData);  // Save new food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(healthData);
         }
 
-        // GET: HealthDatas/Edit/5
+        // GET: FoodCharts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,7 +67,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await HealthDataService.HealthData.FindAsync(id);
+            var healthData = await _HealthDataService.Get(id.Value);
             if (healthData == null)
             {
                 return NotFound();
@@ -81,12 +75,10 @@ namespace KooliProjekt.Controllers
             return View(healthData);
         }
 
-        // POST: HealthDatas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("HealthDataID,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] healthData healthData)
         {
             if (id != healthData.id)
             {
@@ -95,28 +87,13 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    HealthDataService.Update(healthData);
-                    await HealthDataService.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HealthDataExists(healthData.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _HealthDataService.Save(healthData);  // Save updated food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(healthData);
         }
 
-        // GET: HealthDatas/Delete/5
+        // GET: FoodCharts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,34 +101,22 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var healthData = await HealthDataService.HealthData
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (healthData == null)
+            var foodChart = await _HealthDataService.Get(id.Value);
+            if (foodChart == null)
             {
                 return NotFound();
             }
 
-            return View(healthData);
+            return View(foodChart);
         }
 
-        // POST: HealthDatas/Delete/5
+        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var healthData = await HealthDataService.HealthData.FindAsync(id);
-            if (healthData != null)
-            {
-                HealthDataService.HealthData.Remove(healthData);
-            }
-
-            await HealthDataService.SaveChangesAsync();
+            await _HealthDataService.Delete(id);  // Delete food chart
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool HealthDataExists(int id)
-        {
-            return HealthDataService.HealthData.Any(e => e.id == id);
         }
     }
 }

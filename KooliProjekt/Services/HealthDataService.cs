@@ -1,51 +1,74 @@
+// File: Services/FoodChartService.cs
+
 using KooliProjekt.Data;
-using Microsoft.EntityFrameworkCore;
+
+using KooliProjekt.Data.Repositories;
+
+using KooliProjekt.Models;
+
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
-{
-    public class HealthDataService : IHealthDataService
-    {
-        private readonly ApplicationDbContext _context;
 
-        public HealthDataService(ApplicationDbContext context)
+{
+
+    public class HealthDataService : IHealthDataService
+
+    {
+
+        private readonly IHealthDataRepository _IHealthDataRepository;
+
+        // Constructor injection
+
+        public HealthDataService(IHealthDataRepository HealthDataRepository)
+
         {
-            _context = context;
+
+            _HealthDataRepository = HealthDataRepository;
+
         }
+
+        // List method that gets paginated results from repository
 
         public async Task<PagedResult<HealthData>> List(int page, int pageSize)
+
         {
-            return await _context.HealthData.GetPagedAsync(page, 5);
+
+            return await _HealthDataRepository.HealthData.GetPagedAsync(page, 5);
+
         }
+
+        // Method to get a specific FoodChart by ID
 
         public async Task<HealthData> Get(int id)
+
         {
-            var result = await _context.HealthData.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new HealthData(); // Returns a default HealthData if null is found
+
+            return await _HealthDataRepository.Get(id);
+
         }
 
+        // Save method to insert or update a FoodChart
 
-        public async Task Save(HealthData list)
+        public async Task Save(HealthData foodChart)
+
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
 
-            await _context.SaveChangesAsync();
+            await _HealthDataRepository.Save(foodChart);
+
         }
+
+        // Delete method to remove a FoodChart by ID
 
         public async Task Delete(int id)
+
         {
-            var todoList = await _context.HealthData.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.HealthData.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+
+            await _HealthDataRepository.Delete(id);
+
         }
+
     }
+
 }
+
