@@ -20,7 +20,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public PatientsControllerTests()
         {
             _PatientsServiceMock = new Mock<IPatientService>();
-            _controller = new PatientsController((ApplicationDbContext)_PatientsServiceMock.Object);
+            _controller = new PatientsController(_PatientsServiceMock.Object);
         }
         [Fact]
         public async Task Index_should_return_correct_view_with_data()
