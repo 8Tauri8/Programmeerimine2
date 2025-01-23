@@ -20,7 +20,8 @@ namespace KooliProjekt.Controllers
         // GET: HealthDatas
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await HealthDataService.HealthData.GetPagedAsync(page, 5));
+            int pageSize = 5;
+            return View(await _HealthDataService.List(page, pageSize));
         }
 
         // GET: FoodCharts/Details/5
@@ -49,7 +50,7 @@ namespace KooliProjekt.Controllers
         // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] healthData healthData)
+        public async Task<IActionResult> Create([Bind("InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] HealthData healthData)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +79,7 @@ namespace KooliProjekt.Controllers
         // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] healthData healthData)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] HealthData healthData)
         {
             if (id != healthData.id)
             {

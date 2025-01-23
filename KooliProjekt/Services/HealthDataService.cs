@@ -1,74 +1,53 @@
-// File: Services/FoodChartService.cs
-
 using KooliProjekt.Data;
-
-using KooliProjekt.Data.Repositories;
-
-using KooliProjekt.Models;
-
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
-
 {
-
     public class HealthDataService : IHealthDataService
-
     {
-
-        private readonly IHealthDataRepository _IHealthDataRepository;
-
-        // Constructor injection
-
-        public HealthDataService(IHealthDataRepository HealthDataRepository)
-
+        private readonly ApplicationDbContext _context;
+        public HealthDataService(ApplicationDbContext context)
         {
-
-            _HealthDataRepository = HealthDataRepository;
-
+            _context = context;
         }
 
-        // List method that gets paginated results from repository
-
-        public async Task<PagedResult<HealthData>> List(int page, int pageSize)
-
+        public async Task Delete(int? Id)
         {
-
-            return await _HealthDataRepository.HealthData.GetPagedAsync(page, 5);
-
+            var HealthData = await _context.HealthData.FindAsync(Id);
+            if (HealthData != null)
+            {
+                _context.HealthData.Remove(HealthData);
+                await _context.SaveChangesAsync();
+            }
         }
 
-        // Method to get a specific FoodChart by ID
-
-        public async Task<HealthData> Get(int id)
-
+        public async Task<HealthData> Get(int? Id)
         {
-
-            return await _HealthDataRepository.Get(id);
-
+            return await _context.HealthData.FindAsync(Id);
         }
 
-        // Save method to insert or update a FoodChart
-
-        public async Task Save(HealthData foodChart)
-
+        public async Task<bool> Includes(int Id)
         {
-
-            await _HealthDataRepository.Save(foodChart);
-
+            return await _context.HealthData.AnyAsync(c => c.id == Id);
         }
 
-        // Delete method to remove a FoodChart by ID
-
-        public async Task Delete(int id)
-
+        public Task<PagedResult<HealthData>> List(int page, int pageSize)
         {
-
-            await _HealthDataRepository.Delete(id);
-
+            return _context.HealthData.GetPagedAsync(page, pageSize);
         }
 
+        public async Task Save(HealthData HealthData)
+        {
+            if (HealthData.id == 0)
+            {
+                _context.HealthData.Add(HealthData);
+            }
+            else
+            {
+                _context.HealthData.Update(HealthData);
+            }
+            await _context.SaveChangesAsync();
+
+        }
     }
-
 }
-
