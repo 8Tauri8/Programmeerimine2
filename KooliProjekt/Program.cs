@@ -1,7 +1,9 @@
 using KooliProjekt.Data;
+using KooliProjekt.Data.Repositories;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace KooliProjekt
 {
@@ -27,12 +29,13 @@ namespace KooliProjekt
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<INutritionService, NutritionService>();
             builder.Services.AddScoped<IQuantityService, QuantityService>();
+            //abc
+
 
 
 
             var app = builder.Build();
 
-            // Seemenda andmebaas ainult Debug reþiimis
 #if DEBUG
             using (var scope = app.Services.CreateScope())
             {
