@@ -1,5 +1,4 @@
-﻿// File: Controllers/FoodChartsController.cs
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,12 @@ namespace KooliProjekt.Controllers
             _NutritionService = NutritionService;
         }
 
-        // GET: HealthDatas
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 5;
             return View(await _NutritionService.List(page, pageSize));
         }
 
-        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,26 +38,23 @@ namespace KooliProjekt.Controllers
             return View(nutrition);
         }
 
-        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,Eating_time,Nutrients,Quantity")] Nutrition nutrition)
         {
             if (ModelState.IsValid)
             {
-                await _NutritionService.Save(nutrition);  // Save new food chart
+                await _NutritionService.Save(nutrition);
                 return RedirectToAction(nameof(Index));
             }
             return View(nutrition);
         }
 
-        // GET: FoodCharts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,7 +70,6 @@ namespace KooliProjekt.Controllers
             return View(nutrition);
         }
 
-        // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,Eating_time,Nutrients,Quantity")] Nutrition nutrition)
@@ -88,13 +81,12 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                await _NutritionService.Save(nutrition);  // Save updated food chart
+                await _NutritionService.Save(nutrition);  
                 return RedirectToAction(nameof(Index));
             }
             return View(nutrition);
         }
 
-        // GET: FoodCharts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -111,12 +103,11 @@ namespace KooliProjekt.Controllers
             return View(nutrition);
         }
 
-        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _NutritionService.Delete(id);  // Delete food chart
+            await _NutritionService.Delete(id);  
             return RedirectToAction(nameof(Index));
         }
     }

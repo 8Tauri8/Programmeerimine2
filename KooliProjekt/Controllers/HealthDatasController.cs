@@ -1,5 +1,4 @@
-﻿// File: Controllers/FoodChartsController.cs
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,12 @@ namespace KooliProjekt.Controllers
             _HealthDataService = HealthDataService;
         }
 
-        // GET: HealthDatas
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 5;
             return View(await _HealthDataService.List(page, pageSize));
         }
 
-        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,26 +38,24 @@ namespace KooliProjekt.Controllers
             return View(healthData);
         }
 
-        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
         {
             if (ModelState.IsValid)
             {
-                await _HealthDataService.Save(healthData);  // Save new food chart
+                await _HealthDataService.Save(healthData);  
                 return RedirectToAction(nameof(Index));
             }
             return View(healthData);
         }
 
-        // GET: FoodCharts/Edit/5
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,7 +71,7 @@ namespace KooliProjekt.Controllers
             return View(healthData);
         }
 
-        // POST: FoodCharts/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
@@ -88,13 +83,13 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                await _HealthDataService.Save(healthData);  // Save updated food chart
+                await _HealthDataService.Save(healthData);  
                 return RedirectToAction(nameof(Index));
             }
             return View(healthData);
         }
 
-        // GET: FoodCharts/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -111,12 +106,11 @@ namespace KooliProjekt.Controllers
             return View(healthData);
         }
 
-        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _HealthDataService.Delete(id);  // Delete food chart
+            await _HealthDataService.Delete(id); 
             return RedirectToAction(nameof(Index));
         }
     }

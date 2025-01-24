@@ -25,7 +25,6 @@ namespace KooliProjekt.Controllers
             return View(await _NutrientsService.List(page, pageSize));
         }
 
-        // GET: Nutrients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,28 +41,24 @@ namespace KooliProjekt.Controllers
             return View(Nutrients);
         }
 
-        // GET: Nutrients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Nutrients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
         {
             if (ModelState.IsValid)
             {
-                await _NutrientsService.Save(nutrients);  // Save new food chart
+                await _NutrientsService.Save(nutrients); 
                 return RedirectToAction(nameof(Index));
             }
             return View(nutrients);
         }
 
-        // GET: Nutrients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,9 +74,7 @@ namespace KooliProjekt.Controllers
             return View(nutrients);
         }
 
-        // POST: Nutrients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
@@ -93,14 +86,13 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                await _NutrientsService.Save(nutrients);  // Save updated food chart
+                await _NutrientsService.Save(nutrients); 
                 return RedirectToAction(nameof(Index));
             }
 
             return View(nutrients);
         }
 
-        // GET: Nutrients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -117,12 +109,11 @@ namespace KooliProjekt.Controllers
             return View(nutrients);
         }
 
-        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _NutrientsService.Delete(id);  // Delete food chart
+            await _NutrientsService.Delete(id); 
             return RedirectToAction(nameof(Index));
         }
     }

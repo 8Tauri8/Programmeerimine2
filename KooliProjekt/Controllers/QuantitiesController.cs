@@ -1,5 +1,4 @@
-﻿// File: Controllers/FoodChartsController.cs
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +16,12 @@ namespace KooliProjekt.Controllers
             _QuantityService = QuantityService;
         }
 
-        // GET: Quantitys
         public async Task<IActionResult> Index(int page = 1)
         {
             int pageSize = 5;
             return View(await _QuantityService.List(page, pageSize));
         }
 
-        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,26 +38,23 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,Nutrients,Amount")] Quantity quantity)
         {
             if (ModelState.IsValid)
             {
-                await _QuantityService.Save(quantity);  // Save new food chart
+                await _QuantityService.Save(quantity); 
                 return RedirectToAction(nameof(Index));
             }
             return View(quantity);
         }
 
-        // GET: FoodCharts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,7 +70,6 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("id,Nutrients,Amount")] Quantity quantity)
@@ -88,13 +81,12 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                await _QuantityService.Save(quantity);  // Save updated food chart
+                await _QuantityService.Save(quantity);  
                 return RedirectToAction(nameof(Index));
             }
             return View(quantity);
         }
 
-        // GET: FoodCharts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -111,12 +103,11 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _QuantityService.Delete(id);  // Delete food chart
+            await _QuantityService.Delete(id);  
             return RedirectToAction(nameof(Index));
         }
     }
