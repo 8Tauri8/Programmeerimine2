@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿// File: Controllers/FoodChartsController.cs
 using KooliProjekt.Data;
+using KooliProjekt.Models;
 using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly ApplicationDbContext PatientService;
+        private readonly IPatientService _PatientService;
 
-        public PatientsController(ApplicationDbContext context)
+        public PatientsController(IPatientService patientService)
         {
-            PatientService = context;
+            _PatientService = patientService;
         }
 
-        // GET: Patients
+        // GET: patients
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await PatientService.Patient.GetPagedAsync(page, 5));
+            int pageSize = 5;
+            return View(await _PatientService.List(page, pageSize));
         }
 
-        // GET: Patients/Details/5
+        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,8 +32,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await PatientService.Patient
-                .FirstOrDefaultAsync(m => m.id == id);
+            var patient = await _PatientService.Get(id.Value);
             if (patient == null)
             {
                 return NotFound();
@@ -43,29 +41,26 @@ namespace KooliProjekt.Controllers
             return View(patient);
         }
 
-        // GET: Patients/Create
+        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Patients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PatientID,Name")] Patient patient)
+        public async Task<IActionResult> Create([Bind("id,Name,HealthData,Nutrition")] Patient patient)
         {
             if (ModelState.IsValid)
             {
-                PatientService.Add(patient);
-                await PatientService.SaveChangesAsync();
+                await _PatientService.Save(patient);  // Save new food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
         }
 
-        // GET: Patients/Edit/5
+        // GET: FoodCharts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,7 +68,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await PatientService.Patient.FindAsync(id);
+            var patient = await _PatientService.Get(id.Value);
             if (patient == null)
             {
                 return NotFound();
@@ -81,12 +76,10 @@ namespace KooliProjekt.Controllers
             return View(patient);
         }
 
-        // POST: Patients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PatientID,Name")] Patient patient)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Name,HealthData,Nutrition")] Patient patient)
         {
             if (id != patient.id)
             {
@@ -95,28 +88,13 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    PatientService.Update(patient);
-                    await PatientService.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PatientExists(patient.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _PatientService.Save(patient);  // Save updated food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
         }
 
-        // GET: Patients/Delete/5
+        // GET: FoodCharts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,8 +102,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var patient = await PatientService.Patient
-                .FirstOrDefaultAsync(m => m.id == id);
+            var patient = await _PatientService.Get(id.Value);
             if (patient == null)
             {
                 return NotFound();
@@ -134,24 +111,13 @@ namespace KooliProjekt.Controllers
             return View(patient);
         }
 
-        // POST: Patients/Delete/5
+        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var patient = await PatientService.Patient.FindAsync(id);
-            if (patient != null)
-            {
-                PatientService.Patient.Remove(patient);
-            }
-
-            await PatientService.SaveChangesAsync();
+            await _PatientService.Delete(id);  // Delete food chart
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PatientExists(int id)
-        {
-            return PatientService.Patient.Any(e => e.id == id);
         }
     }
 }

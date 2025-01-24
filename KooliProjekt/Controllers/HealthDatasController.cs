@@ -50,7 +50,7 @@ namespace KooliProjekt.Controllers
         // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] HealthData healthData)
+        public async Task<IActionResult> Create([Bind("id,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace KooliProjekt.Controllers
         // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,InvoiceNo,InvoiceDate,user,date,meal,nutrients,amount")] HealthData healthData)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Weight,Blood_pressure,Blood_sugar")] HealthData healthData)
         {
             if (id != healthData.id)
             {
@@ -102,13 +102,13 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var foodChart = await _HealthDataService.Get(id.Value);
-            if (foodChart == null)
+            var healthData = await _HealthDataService.Get(id.Value);
+            if (healthData == null)
             {
                 return NotFound();
             }
 
-            return View(foodChart);
+            return View(healthData);
         }
 
         // POST: FoodCharts/Delete/5

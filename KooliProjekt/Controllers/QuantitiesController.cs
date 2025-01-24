@@ -1,30 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿// File: Controllers/FoodChartsController.cs
 using KooliProjekt.Data;
+using KooliProjekt.Models;
+using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Policy;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class QuantitiesController : Controller
     {
-        private readonly ApplicationDbContext QuantityService;
+        private readonly IQuantityService _QuantityService;
 
-        public QuantitiesController(ApplicationDbContext context)
+        public QuantitiesController(IQuantityService QuantityService)
         {
-            QuantityService = context;
+            _QuantityService = QuantityService;
         }
 
-        // GET: Quantities
+        // GET: Quantitys
         public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await QuantityService.Quantity.GetPagedAsync(page, 5));
+            int pageSize = 5;
+            return View(await _QuantityService.List(page, pageSize));
         }
 
-        // GET: Quantities/Details/5
+        // GET: FoodCharts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,8 +32,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await QuantityService.Quantity
-                .FirstOrDefaultAsync(m => m.id == id);
+            var quantity = await _QuantityService.Get(id.Value);
             if (quantity == null)
             {
                 return NotFound();
@@ -42,29 +41,26 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // GET: Quantities/Create
+        // GET: FoodCharts/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Quantities/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("QuantityID,Amount")] Quantity quantity)
+        public async Task<IActionResult> Create([Bind("id,Nutrients,Amount")] Quantity quantity)
         {
             if (ModelState.IsValid)
             {
-                QuantityService.Add(quantity);
-                await QuantityService.SaveChangesAsync();
+                await _QuantityService.Save(quantity);  // Save new food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(quantity);
         }
 
-        // GET: Quantities/Edit/5
+        // GET: FoodCharts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -72,7 +68,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await QuantityService.Quantity.FindAsync(id);
+            var quantity = await _QuantityService.Get(id.Value);
             if (quantity == null)
             {
                 return NotFound();
@@ -80,12 +76,10 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // POST: Quantities/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FoodCharts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuantityID,Amount")] Quantity quantity)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Nutrients,Amount")] Quantity quantity)
         {
             if (id != quantity.id)
             {
@@ -94,28 +88,13 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    QuantityService.Update(quantity);
-                    await QuantityService.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!QuantityExists(quantity.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _QuantityService.Save(quantity);  // Save updated food chart
                 return RedirectToAction(nameof(Index));
             }
             return View(quantity);
         }
 
-        // GET: Quantities/Delete/5
+        // GET: FoodCharts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -123,8 +102,7 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var quantity = await QuantityService.Quantity
-                .FirstOrDefaultAsync(m => m.id == id);
+            var quantity = await _QuantityService.Get(id.Value);
             if (quantity == null)
             {
                 return NotFound();
@@ -133,24 +111,13 @@ namespace KooliProjekt.Controllers
             return View(quantity);
         }
 
-        // POST: Quantities/Delete/5
+        // POST: FoodCharts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var quantity = await QuantityService.Quantity.FindAsync(id);
-            if (quantity != null)
-            {
-                QuantityService.Quantity.Remove(quantity);
-            }
-
-            await QuantityService.SaveChangesAsync();
+            await _QuantityService.Delete(id);  // Delete food chart
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool QuantityExists(int id)
-        {
-            return QuantityService.Quantity.Any(e => e.id == id);
         }
     }
 }

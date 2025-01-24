@@ -53,7 +53,7 @@ namespace KooliProjekt.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("NutrientsID,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
+        public async Task<IActionResult> Create([Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace KooliProjekt.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("NutrientsID,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
+        public async Task<IActionResult> Edit(int id, [Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
         {
             if (id != nutrients.id)
             {
@@ -108,13 +108,13 @@ namespace KooliProjekt.Controllers
                 return NotFound();
             }
 
-            var foodChart = await _NutrientsService.Get(id.Value);
-            if (foodChart == null)
+            var nutrients = await _NutrientsService.Get(id.Value);
+            if (nutrients == null)
             {
                 return NotFound();
             }
 
-            return View(foodChart);
+            return View(nutrients);
         }
 
         // POST: FoodCharts/Delete/5
