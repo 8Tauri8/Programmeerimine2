@@ -20,7 +20,7 @@ namespace KooliProjekt.UnitTests.ControllerTests
         public NutritionsControllerTests()
         {
             _NutritionsServiceMock = new Mock<INutritionService>();
-   //         _controller = new NutritionsController(_NutritionsServiceMock.Object);
+            _controller = new NutritionsController(_NutritionsServiceMock.Object);
         }
         [Fact]
         public async Task Index_should_return_correct_view_with_data()
