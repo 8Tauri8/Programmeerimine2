@@ -150,6 +150,60 @@ namespace KooliProjekt.UnitTests.ControllerTests
         }
 
         [Fact]
+        public async Task Edit_Post_Should_Return_NotFound_When_Id_Does_Not_Match_Model_Id()
+        {
+            // Arrange
+            int urlId = 1;
+            var healthData = new HealthData { id = 2, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 }; // Different ID from the URL
+            _HealthDataServiceMock
+                .Setup(x => x.Save(It.IsAny<HealthData>())) // Ensuring Save is not called
+                .Verifiable();
+
+            // Act
+            var result = await _controller.Edit(urlId, healthData) as NotFoundResult;
+
+            // Assert
+            Assert.NotNull(result);
+            _HealthDataServiceMock.Verify(x => x.Save(It.IsAny<HealthData>()), Times.Never);  // Ensure Save was never called
+        }
+
+        [Fact]
+        public async Task Edit_Post_Should_Save_And_Redirect_When_Model_Is_Valid()
+        {
+            // Arrange
+            int urlId = 1;
+            var healthData = new HealthData { id = urlId, Weight = 75, Blood_pressure = 130, Blood_sugar = 95 };
+            _HealthDataServiceMock
+                .Setup(x => x.Save(It.IsAny<HealthData>()))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            // Act
+            var result = await _controller.Edit(urlId, healthData) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);  // Ensure it redirects to the Index action
+            _HealthDataServiceMock.Verify(x => x.Save(healthData), Times.Once);  // Ensure Save method was called once
+        }
+
+        [Fact]
+        public async Task Edit_Post_Should_Return_View_When_Model_Is_Invalid()
+        {
+            // Arrange
+            int urlId = 1;
+            var healthData = new HealthData { id = urlId };
+            _controller.ModelState.AddModelError("Weight", "Required");  // Simulate invalid model state
+
+            // Act
+            var result = await _controller.Edit(urlId, healthData) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(healthData, result.Model);  // Ensure the model is passed back to the view
+        }
+
+        [Fact]
         public async Task Delete_should_return_notfound_when_id_is_missing()
         {
             int? id = null;
