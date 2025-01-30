@@ -34,8 +34,11 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int id)
         {
-            // Use repository to delete health data
-            await _repository.Delete(id);
+            var healthData = await _repository.Get(id); // Get the health data by id
+            if (healthData != null)
+            {
+                await _repository.Delete(id); // Only delete if health data is found
+            }
         }
     }
 }
