@@ -41,23 +41,29 @@ namespace KooliProjekt.Services
         {
             if (healthData.id == 0)
             {
-                _context.HealthData.Add(healthData); // Add new entity if ID is 0
+                // Add a new health data entry when the id is 0 (not yet saved in the DB)
+                _context.HealthData.Add(healthData);
             }
             else
             {
                 var existingHealthData = await _context.HealthData.FindAsync(healthData.id);
+
                 if (existingHealthData != null)
                 {
-                    // Explicitly set the entity to modified state
+                    // If it exists, update the entity
                     _context.Entry(existingHealthData).State = EntityState.Modified;
                 }
                 else
                 {
-                    // If entity doesn't exist, update it (add it as new, for this case)
-                    _context.HealthData.Update(healthData);
+                    // If it doesn't exist, this is likely a situation where the entity has been deleted or does not exist in DB.
+                    // You can handle this case more gracefully by deciding whether to throw an exception or add a new one.
+                    // For now, let's add it as a new entry.
+                    _context.HealthData.Add(healthData);
                 }
             }
+
             await _context.SaveChangesAsync(); // Save changes to the database
         }
+
     }
 }
