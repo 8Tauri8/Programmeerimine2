@@ -37,18 +37,30 @@ namespace KooliProjekt.Services
             return _context.HealthData.GetPagedAsync(page, pageSize);
         }
 
-        public async Task Save(HealthData HealthData)
+        public async Task Save(HealthData healthData)
         {
-            if (HealthData.id == 0)
+            if (healthData.id == 0)
             {
-                _context.HealthData.Add(HealthData);
+                _context.HealthData.Add(healthData); // Add new entity if ID is 0
             }
             else
             {
-                _context.HealthData.Update(HealthData);
+                var existingHealthData = await _context.HealthData.FindAsync(healthData.id);
+                if (existingHealthData != null)
+                {
+                    // Explicitly set the entity to modified state
+                    _context.Entry(existingHealthData).State = EntityState.Modified;
+                }
+                else
+                {
+                    // If entity doesn't exist, update it (add it as new, for this case)
+                    _context.HealthData.Update(healthData);
+                }
             }
-            await _context.SaveChangesAsync();
-
+            await _context.SaveChangesAsync(); // Save changes to database
         }
+
+
+
     }
 }

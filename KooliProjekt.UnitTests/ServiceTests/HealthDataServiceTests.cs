@@ -36,24 +36,29 @@ public class HealthDataServiceTests : ServiceTestBase
     {
         // Arrange
         var service = new HealthDataService(DbContext);
-        var existingHealthData = new HealthData { id = 1, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 };
-        DbContext.HealthData.Add(existingHealthData);
+
+        // Clear any existing data in the database to avoid conflict
+        DbContext.HealthData.RemoveRange(DbContext.HealthData);
         await DbContext.SaveChangesAsync();
 
-        // Update some fields
+        // Add initial health data
+        var existingHealthData = new HealthData { id = 1, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 };
+        DbContext.HealthData.Add(existingHealthData);
+        await DbContext.SaveChangesAsync(); // Save initial data
+
+        // Update the existing record
         existingHealthData.Weight = 75;
 
-        // Explicitly set the entity state to modified to ensure EF tracks the changes
-        DbContext.Entry(existingHealthData).State = EntityState.Modified;
-
         // Act
-        await service.Save(existingHealthData);
+        await service.Save(existingHealthData);  // This should update the existing health data
 
         // Assert
-        var updatedData = DbContext.HealthData.FirstOrDefault(hd => hd.id == existingHealthData.id);
+        var updatedData = await DbContext.HealthData.FirstOrDefaultAsync(hd => hd.id == existingHealthData.id);
         Assert.NotNull(updatedData);
-        Assert.Equal(existingHealthData.Weight, updatedData.Weight);
+        Assert.Equal(existingHealthData.Weight, updatedData.Weight);  // Ensure data is updated correctly
     }
+
+
 
     [Fact]
     public async Task Delete_should_remove_given_health_data()
