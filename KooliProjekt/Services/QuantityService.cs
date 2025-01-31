@@ -1,51 +1,36 @@
 using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
     public class QuantityService : IQuantityService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IQuantityRepository _repository;
 
-        public QuantityService(ApplicationDbContext context)
+        public QuantityService(IQuantityRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<PagedResult<Quantity>> List(int page, int pageSize)
         {
-            return await _context.Quantity.GetPagedAsync(page, 5);
+            return await _repository.List(page, pageSize);
         }
 
         public async Task<Quantity> Get(int id)
         {
-            var result = await _context.Quantity.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Quantity(); // Returns a default HealthData if null is found
+            var result = await _repository.Get(id);
+            return result ?? new Quantity(); // Returns a default Quantity if not found
         }
 
-        public async Task Save(Quantity list)
+        public async Task Save(Quantity item)
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            await _repository.Save(item);
         }
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Quantity.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Quantity.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+            await _repository.Delete(id);
         }
     }
 }
