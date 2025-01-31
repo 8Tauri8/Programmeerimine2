@@ -1,51 +1,37 @@
 using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
 {
     public class NutritionService : INutritionService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly INutritionRepository _nutritionRepository;
 
-        public NutritionService(ApplicationDbContext context)
+        // Constructor injected with the repository instead of DbContext
+        public NutritionService(INutritionRepository nutritionRepository)
         {
-            _context = context;
+            _nutritionRepository = nutritionRepository;
         }
 
         public async Task<PagedResult<Nutrition>> List(int page, int pageSize)
         {
-            return await _context.Nutrition.GetPagedAsync(page, 5);
+            return await _nutritionRepository.List(page, pageSize);
         }
 
         public async Task<Nutrition> Get(int id)
         {
-            var result = await _context.Nutrition.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Nutrition(); // Returns a default HealthData if null is found
+            var result = await _nutritionRepository.Get(id);
+            return result ?? new Nutrition(); // Return default Nutrition if not found
         }
 
-        public async Task Save(Nutrition list)
+        public async Task Save(Nutrition nutrition)
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            await _nutritionRepository.Save(nutrition);
         }
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Nutrition.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Nutrition.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+            await _nutritionRepository.Delete(id);
         }
     }
 }
