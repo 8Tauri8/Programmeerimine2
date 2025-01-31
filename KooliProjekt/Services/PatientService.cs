@@ -1,51 +1,37 @@
 using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Services;
 
 namespace KooliProjekt.Services
 {
     public class PatientService : IPatientService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPatientRepository _patientRepository;
 
-        public PatientService(ApplicationDbContext context)
+        public PatientService(IPatientRepository patientRepository)
         {
-            _context = context;
+            _patientRepository = patientRepository;
         }
 
         public async Task<PagedResult<Patient>> List(int page, int pageSize)
         {
-            return await _context.Patient.GetPagedAsync(page, 5);
+            return await _patientRepository.List(page, pageSize);
         }
 
         public async Task<Patient> Get(int id)
         {
-            var result = await _context.Patient.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Patient(); // Returns a default HealthData if null is found
+            var result = await _patientRepository.Get(id);
+            return result ?? new Patient(); // Return default Patient if not found
         }
 
-        public async Task Save(Patient list)
+        public async Task Save(Patient patient)
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            await _patientRepository.Save(patient);
         }
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Patient.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Patient.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+            await _patientRepository.Delete(id);
         }
     }
 }

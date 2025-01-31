@@ -16,14 +16,14 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
         public PatientServiceTests()
         {
-            // Create a mock IPatientRepository
+            // Prepare some mock data for patients
             var patientList = new List<Patient>
             {
                 new Patient { id = 1, Name = "John Doe", HealthData = "Normal", Nutrition = "Balanced" },
                 new Patient { id = 2, Name = "Jane Smith", HealthData = "High Blood Pressure", Nutrition = "Low Sodium" }
             };
 
-            // Mock the repository to return the patient list
+            // Mock the repository methods
             _repositoryMock = new Mock<IPatientRepository>();
             _repositoryMock.Setup(r => r.List(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(new PagedResult<Patient>
             {
@@ -37,7 +37,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             _repositoryMock.Setup(r => r.Save(It.IsAny<Patient>())).Returns(Task.CompletedTask);
             _repositoryMock.Setup(r => r.Delete(It.IsAny<int>())).Returns(Task.CompletedTask);
 
-            // Initialize the service with the mocked repository
+            // Initialize the service with the mock repository
             _service = new PatientService(_repositoryMock.Object);
         }
 
