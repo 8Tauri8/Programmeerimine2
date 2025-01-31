@@ -1,51 +1,37 @@
 using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Services
 {
     public class NutrientsService : INutrientsService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly INutrientsRepository _repository;
 
-        public NutrientsService(ApplicationDbContext context)
+        public NutrientsService(INutrientsRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         public async Task<PagedResult<Nutrients>> List(int page, int pageSize)
         {
-            return await _context.Nutrients.GetPagedAsync(page, 5);
+            return await _repository.List(page, pageSize);
         }
 
         public async Task<Nutrients> Get(int id)
         {
-            var result = await _context.Nutrients.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Nutrients(); // Returns a default HealthData if null is found
+            var result = await _repository.Get(id);
+            return result ?? new Nutrients(); // Returns a default Nutrients object if not found
         }
 
-        public async Task Save(Nutrients list)
+        public async Task Save(Nutrients nutrient)
         {
-            if(list.id == 0)
-            {
-                _context.Add(list);
-            }
-            else
-            {
-                _context.Update(list);
-            }
-
-            await _context.SaveChangesAsync();
+            await _repository.Save(nutrient);
         }
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Nutrients.FindAsync(id);
-            if (todoList != null)
-            {
-                _context.Nutrients.Remove(todoList);
-                await _context.SaveChangesAsync();
-            }            
+            await _repository.Delete(id);
         }
     }
 }
