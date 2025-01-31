@@ -13,19 +13,20 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int? Id)
         {
-            var HealthData = await _context.HealthData.FindAsync(Id);
-            if (HealthData != null)
+            var healthData = await _context.HealthData.FindAsync(Id);
+            if (healthData != null)
             {
-                _context.HealthData.Remove(HealthData);
-                await _context.SaveChangesAsync();
+                _context.HealthData.Remove(healthData);  // Remove the entity from DbContext
+                await _context.SaveChangesAsync();      // Save changes to the database
             }
         }
+
 
         public async Task<HealthData> Get(int? Id)
         {
             return await _context.HealthData.FindAsync(Id);
         }
-
+            
         public async Task<bool> Includes(int Id)
         {
             return await _context.HealthData.AnyAsync(c => c.id == Id);
