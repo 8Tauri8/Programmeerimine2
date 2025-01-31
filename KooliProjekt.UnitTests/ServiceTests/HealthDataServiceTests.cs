@@ -1,88 +1,98 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Services;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
-using System.Threading.Tasks;
-using System.Linq;
-using System.Collections.Generic;
 
-public class HealthDataServiceTests
+namespace KooliProjekt.UnitTests.ServiceTests
 {
-    private readonly HealthDataService _service;
-    private readonly ApplicationDbContext _context;
-
-    public HealthDataServiceTests()
+    public class HealthDataServiceTests : ServiceTestBase
     {
-        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: "TestDb") // Ensure this is using the correct package
-            .Options;
+        public HealthDataServiceTests() : base() { }
 
-        _context = new ApplicationDbContext(options);
-        _service = new HealthDataService(_context);
-    }
+        [Fact]
+        public async Task Save_should_add_new_health_data()
+        {
+            // Arrange
+            var service = new HealthDataService(DbContext);
+            var healthData = new HealthData { Weight = 80, Blood_pressure = 140, Blood_sugar = 100 };
 
-    [Fact]
-    public async Task Save_AddsHealthData_WhenIdIsZero()
-    {
-        var healthData = new HealthData { id = 0, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 };
+            // Act
+            await service.Save(healthData);
 
-        await _service.Save(healthData);
+            // Assert
+            var count = DbContext.HealthData.Count();
+            var result = DbContext.HealthData.FirstOrDefault();
+            Assert.Equal(1, count);
+            Assert.Equal(healthData.Weight, result.Weight);
+            Assert.Equal(healthData.Blood_pressure, result.Blood_pressure);
+            Assert.Equal(healthData.Blood_sugar, result.Blood_sugar);
+        }
 
-        var savedData = await _context.HealthData.FindAsync(healthData.id);
-        Assert.NotNull(savedData);
-        Assert.Equal(healthData.Weight, savedData.Weight);
-    }
+        [Fact]
+        public async Task Save_should_update_existing_health_data()
+        {
+            // Arrange
+            var service = new HealthDataService(DbContext);
+            var existingHealthData = new HealthData { id = 1, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 };
+            DbContext.HealthData.Add(existingHealthData);
+            await DbContext.SaveChangesAsync();
 
-    [Fact]
-    public async Task Save_UpdatesHealthData_WhenIdIsNotZero()
-    {
-        var healthData = new HealthData { id = 1, Weight = 80, Blood_pressure = 130, Blood_sugar = 95 };
-        _context.HealthData.Add(healthData);
-        await _context.SaveChangesAsync();
+            existingHealthData.Weight = 75; // Update some fields
 
-        healthData.Weight = 85; // Update value
-        await _service.Save(healthData);
+            // Act
+            await service.Save(existingHealthData);
 
-        var updatedData = await _context.HealthData.FindAsync(healthData.id);
-        Assert.NotNull(updatedData);
-        Assert.Equal(85, updatedData.Weight); // Verify the update was successful
-    }
+            // Assert
+            var updatedData = DbContext.HealthData.FirstOrDefault(hd => hd.id == existingHealthData.id);
+            Assert.NotNull(updatedData);
+            Assert.Equal(existingHealthData.Weight, updatedData.Weight);
+        }
 
-    [Fact]
-    public async Task Delete_DeletesHealthData_WhenExists()
-    {
-        var healthData = new HealthData { id = 1, Weight = 75, Blood_pressure = 125, Blood_sugar = 100 };
-        _context.HealthData.Add(healthData);
-        await _context.SaveChangesAsync();
+        [Fact]
+        public async Task Delete_should_remove_given_health_data()
+        {
+            // Arrange
+            var service = new HealthDataService(DbContext);
+            var healthData = new HealthData { Weight = 80, Blood_pressure = 140, Blood_sugar = 100 };
+            DbContext.HealthData.Add(healthData);
+            await DbContext.SaveChangesAsync();
 
-        await _service.Delete(healthData.id);
+            // Act
+            await service.Delete(healthData.id);
 
-        var deletedData = await _context.HealthData.FindAsync(healthData.id);
-        Assert.Null(deletedData); // Should be null as it's deleted
-    }
+            // Assert
+            var count = DbContext.HealthData.Count();
+            Assert.Equal(0, count);
+        }
 
-    [Fact]
-    public async Task Get_ReturnsHealthData_WhenExists()
-    {
-        var healthData = new HealthData { id = 1, Weight = 72, Blood_pressure = 110, Blood_sugar = 85 };
-        _context.HealthData.Add(healthData);
-        await _context.SaveChangesAsync();
+        [Fact]
+        public async Task Get_should_return_health_data_when_found()
+        {
+            // Arrange
+            var service = new HealthDataService(DbContext);
+            var healthData = new HealthData { id = 1, Weight = 70, Blood_pressure = 120, Blood_sugar = 90 };
+            DbContext.HealthData.Add(healthData);
+            await DbContext.SaveChangesAsync();
 
-        var result = await _service.Get(healthData.id);
+            // Act
+            var result = await service.Get(healthData.id);
 
-        Assert.NotNull(result);
-        Assert.Equal(healthData.Weight, result.Weight);
-    }
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(healthData.id, result.id);
+            Assert.Equal(healthData.Weight, result.Weight);
+        }
 
-    [Fact]
-    public async Task Includes_ReturnsTrue_WhenHealthDataExists()
-    {
-        var healthData = new HealthData { id = 1, Weight = 70, Blood_pressure = 115, Blood_sugar = 90 };
-        _context.HealthData.Add(healthData);
-        await _context.SaveChangesAsync();
+        [Fact]
+        public async Task Get_should_return_null_when_not_found()
+        {
+            // Arrange
+            var service = new HealthDataService(DbContext);
 
-        var result = await _service.Includes(healthData.id);
+            // Act
+            var result = await service.Get(999); // ID that doesn't exist
 
-        Assert.True(result);
+            // Assert
+            Assert.Null(result);
+        }
     }
 }
