@@ -58,6 +58,27 @@ public class HealthDataServiceTests : ServiceTestBase
         Assert.Equal(existingHealthData.Weight, updatedData.Weight);  // Ensure data is updated correctly
     }
 
+    [Fact]
+    public async Task Save_should_add_new_health_data_when_not_existing()
+    {
+        // Arrange
+        var service = new HealthDataService(DbContext);
+        var healthData = new HealthData { Weight = 80, Blood_pressure = 140, Blood_sugar = 100 }; // No id set
+
+        // Clear any existing data
+        DbContext.HealthData.RemoveRange(DbContext.HealthData);
+        await DbContext.SaveChangesAsync();
+
+        // Act
+        await service.Save(healthData); // This should add a new health data entry
+
+        // Assert
+        var result = await DbContext.HealthData.FirstOrDefaultAsync(hd => hd.Weight == healthData.Weight && hd.Blood_pressure == healthData.Blood_pressure && hd.Blood_sugar == healthData.Blood_sugar);
+        Assert.NotNull(result);
+        Assert.Equal(healthData.Weight, result.Weight);
+        Assert.Equal(healthData.Blood_pressure, result.Blood_pressure);
+        Assert.Equal(healthData.Blood_sugar, result.Blood_sugar);
+    }
 
 
     [Fact]
@@ -82,8 +103,6 @@ public class HealthDataServiceTests : ServiceTestBase
         var count = DbContext.HealthData.Count();  // Count remaining entries
         Assert.Equal(0, count);  // Ensure no entries are left
     }
-
-
 
     [Fact]
     public async Task Get_should_return_health_data_when_found()

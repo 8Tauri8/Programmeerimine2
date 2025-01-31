@@ -6,6 +6,7 @@ namespace KooliProjekt.Services
     public class HealthDataService : IHealthDataService
     {
         private readonly ApplicationDbContext _context;
+
         public HealthDataService(ApplicationDbContext context)
         {
             _context = context;
@@ -21,12 +22,11 @@ namespace KooliProjekt.Services
             }
         }
 
-
         public async Task<HealthData> Get(int? Id)
         {
             return await _context.HealthData.FindAsync(Id);
         }
-            
+
         public async Task<bool> Includes(int Id)
         {
             return await _context.HealthData.AnyAsync(c => c.id == Id);
@@ -57,10 +57,7 @@ namespace KooliProjekt.Services
                     _context.HealthData.Update(healthData);
                 }
             }
-            await _context.SaveChangesAsync(); // Save changes to database
+            await _context.SaveChangesAsync(); // Save changes to the database
         }
-
-
-
     }
 }
