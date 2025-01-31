@@ -1,37 +1,38 @@
-using KooliProjekt.Data;
 using KooliProjekt.Data.Repositories;
-using System.Threading.Tasks;
+using KooliProjekt.Data;
+using KooliProjekt.Services;
 
-namespace KooliProjekt.Services
+public class NutrientsService : INutrientsService
 {
-    public class NutrientsService : INutrientsService
+    private readonly INutrientsRepository _nutrientsRepository;
+
+    public NutrientsService(INutrientsRepository nutrientsRepository)
     {
-        private readonly INutrientsRepository _repository;
+        _nutrientsRepository = nutrientsRepository;
+    }
 
-        public NutrientsService(INutrientsRepository repository)
-        {
-            _repository = repository;
-        }
+    public async Task<PagedResult<Nutrients>> List(int page, int pageSize)
+    {
+        return await _nutrientsRepository.List(page, pageSize);
+    }
 
-        public async Task<PagedResult<Nutrients>> List(int page, int pageSize)
-        {
-            return await _repository.List(page, pageSize);
-        }
+    public async Task<Nutrients> Get(int id)
+    {
+        var result = await _nutrientsRepository.Get(id);
+        return result ?? new Nutrients(); // Return a default Nutrient if not found
+    }
 
-        public async Task<Nutrients> Get(int id)
-        {
-            var result = await _repository.Get(id);
-            return result ?? new Nutrients(); // Returns a default Nutrients object if not found
-        }
+    public async Task Save(Nutrients nutrient)
+    {
+        await _nutrientsRepository.Save(nutrient);
+    }
 
-        public async Task Save(Nutrients nutrient)
+    public async Task Delete(int id)
+    {
+        var nutrient = await _nutrientsRepository.Get(id);
+        if (nutrient != null) // Only delete if the nutrient is found
         {
-            await _repository.Save(nutrient);
-        }
-
-        public async Task Delete(int id)
-        {
-            await _repository.Delete(id);
+            await _nutrientsRepository.Delete(id);
         }
     }
 }

@@ -136,7 +136,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             await _service.Delete(id);
 
             // Assert
-            _repositoryMock.Verify(r => r.Delete(It.IsAny<int>()), Times.Never); // Verify Delete was never called
+            _repositoryMock.Verify(r => r.Delete(It.IsAny<int>()), Times.Never);
         }
     }
 }
