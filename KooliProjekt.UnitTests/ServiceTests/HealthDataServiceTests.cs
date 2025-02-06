@@ -138,5 +138,21 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.False(result);
         }
+
+        [Fact]
+        public async Task Save_ShouldAddNewHealthDataWhenExistingNotFound()
+        {
+            // Arrange
+            var healthData = new HealthData { id = 999, Weight = 75.5f, Blood_pressure = 120.8f, Blood_sugar = 90.2f };
+
+            // Act
+            await _healthDataService.Save(healthData);
+            await DbContext.SaveChangesAsync();
+
+            // Assert
+            var savedHealthData = await DbContext.HealthData.FindAsync(999);
+            Assert.NotNull(savedHealthData);
+            Assert.Equal(75.5f, savedHealthData.Weight);
+        }
     }
 }

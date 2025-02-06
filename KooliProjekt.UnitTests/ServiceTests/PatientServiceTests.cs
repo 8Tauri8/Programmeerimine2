@@ -2,6 +2,8 @@
 using KooliProjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -27,6 +29,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             var result = await _patientService.List(1, 5);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -43,6 +46,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             var result = await _patientService.Get(patient.id);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -57,11 +61,33 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _patientService.Save(patient);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var savedPatient = await DbContext.Patient.FirstOrDefaultAsync();
             Assert.NotNull(savedPatient);
             Assert.Equal("Patient1", savedPatient.Name);
+        }
+
+        [Fact]
+        public async Task Save_ShouldUpdateExistingPatient()
+        {
+            // Arrange
+            var patient = new Patient { Name = "Patient1", HealthData = "Data1", Nutrition = "Nutrition1" };
+            DbContext.Patient.Add(patient);
+            await DbContext.SaveChangesAsync();
+            var patientId = patient.id;
+            DbContext.ChangeTracker.Clear();
+
+            // Act
+            patient.Name = "UpdatedPatient";
+            await _patientService.Save(patient);
+            await DbContext.SaveChangesAsync();
+
+            // Assert
+            var updatedPatient = await DbContext.Patient.FindAsync(patientId);
+            Assert.NotNull(updatedPatient);
+            Assert.Equal("UpdatedPatient", updatedPatient.Name);
         }
 
         [Fact]
@@ -74,10 +100,22 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _patientService.Delete(patient.id);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var deletedPatient = await DbContext.Patient.FindAsync(patient.id);
             Assert.Null(deletedPatient);
+        }
+
+        [Fact]
+        public async Task Get_ShouldReturnDefaultPatientWhenNotFound()
+        {
+            // Act
+            var result = await _patientService.Get(999);
+
+            // Assert
+            Assert.NotNull(result); // It should not be null, but a default Patient object
+            Assert.Equal(0, result.id); // Verify it's a default object
         }
     }
 }

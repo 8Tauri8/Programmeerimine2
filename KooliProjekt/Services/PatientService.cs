@@ -20,18 +20,18 @@ namespace KooliProjekt.Services
         public async Task<Patient> Get(int id)
         {
             var result = await _context.Patient.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Patient(); // Returns a default HealthData if null is found
+            return result ?? new Patient(); // Returns a default Patient if null is found
         }
 
-        public async Task Save(Patient list)
+        public async Task Save(Patient patient)
         {
-            if(list.id == 0)
+            if (patient.id == 0)
             {
-                _context.Add(list);
+                _context.Patient.Add(patient);
             }
             else
             {
-                _context.Update(list);
+                _context.Patient.Update(patient);
             }
 
             await _context.SaveChangesAsync();
@@ -39,12 +39,12 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Patient.FindAsync(id);
-            if (todoList != null)
+            var patient = await _context.Patient.FindAsync(id);
+            if (patient != null)
             {
-                _context.Patient.Remove(todoList);
+                _context.Patient.Remove(patient);
                 await _context.SaveChangesAsync();
-            }            
+            }
         }
     }
 }

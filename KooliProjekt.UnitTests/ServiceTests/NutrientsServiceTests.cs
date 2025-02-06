@@ -2,6 +2,9 @@
 using KooliProjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -11,10 +14,6 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
         public NutrientsServiceTests()
         {
-            // Ensure a fresh in-memory database for each test run
-            DbContext.Database.EnsureDeleted();
-            DbContext.Database.EnsureCreated();
-
             _nutrientsService = new NutrientsService(DbContext);
         }
 
@@ -26,6 +25,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _nutrientsService.Save(nutrient);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var savedNutrient = await DbContext.Nutrients.FirstOrDefaultAsync();
@@ -40,13 +40,16 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var nutrient = new Nutrients { Name = "Protein", Sugar = 5, Fat = 10, Carbohydrates = 20 };
             DbContext.Nutrients.Add(nutrient);
             await DbContext.SaveChangesAsync();
-            nutrient.Fat = 15;
+            var nutrientId = nutrient.id;
+            DbContext.ChangeTracker.Clear();
 
             // Act
+            nutrient.Fat = 15;
             await _nutrientsService.Save(nutrient);
+            await DbContext.SaveChangesAsync();
 
             // Assert
-            var updatedNutrient = await DbContext.Nutrients.FindAsync(nutrient.id);
+            var updatedNutrient = await DbContext.Nutrients.FindAsync(nutrientId);
             Assert.NotNull(updatedNutrient);
             Assert.Equal(15, updatedNutrient.Fat);
         }
@@ -87,11 +90,27 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _nutrientsService.Delete(nutrient.id);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var deletedNutrient = await DbContext.Nutrients.FindAsync(nutrient.id);
             Assert.Null(deletedNutrient);
         }
+
+
+        [Fact]
+        public async Task Delete_ShouldThrowExceptionWhenNutrientNotFound()
+        {
+            // Arrange
+            int nonExistentId = 999;
+
+            // Act & Assert
+            await Assert.ThrowsAsync<KeyNotFoundException>(async () =>
+            {
+                await _nutrientsService.Delete(nonExistentId);
+            });
+        }
+
 
         [Fact]
         public async Task List_ShouldReturnPagedNutrients()
