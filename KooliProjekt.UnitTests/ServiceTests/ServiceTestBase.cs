@@ -1,5 +1,6 @@
 ﻿using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -9,18 +10,19 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
         public ServiceTestBase()
         {
-            // Create an in-memory database for testing
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "HealthDataTestDb")
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unique name for each test
                 .Options;
 
             DbContext = new ApplicationDbContext(options);
-            DbContext.Database.EnsureCreated(); // Ensure the in-memory database is created
+            DbContext.Database.EnsureCreated(); // Ensure the database is created
+
         }
 
         public void Dispose()
         {
-            DbContext.Dispose(); // Dispose the DbContext after each test
+            DbContext.Database.EnsureDeleted(); // Clean up after each test
+            DbContext.Dispose();
         }
     }
 }

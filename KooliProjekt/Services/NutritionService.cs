@@ -14,24 +14,24 @@ namespace KooliProjekt.Services
 
         public async Task<PagedResult<Nutrition>> List(int page, int pageSize)
         {
-            return await _context.Nutrition.GetPagedAsync(page, 5);
+            return await _context.Nutrition.GetPagedAsync(page, pageSize);
         }
 
-        public async Task<Nutrition> Get(int id)
+        public async Task<Nutrition?> Get(int id)
         {
             var result = await _context.Nutrition.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Nutrition(); // Returns a default HealthData if null is found
+            return result;
         }
 
-        public async Task Save(Nutrition list)
+        public async Task Save(Nutrition nutrition)
         {
-            if(list.id == 0)
+            if (nutrition.id == 0)
             {
-                _context.Add(list);
+                _context.Nutrition.Add(nutrition);
             }
             else
             {
-                _context.Update(list);
+                _context.Nutrition.Update(nutrition);
             }
 
             await _context.SaveChangesAsync();
@@ -39,12 +39,12 @@ namespace KooliProjekt.Services
 
         public async Task Delete(int id)
         {
-            var todoList = await _context.Nutrition.FindAsync(id);
-            if (todoList != null)
+            var nutrition = await _context.Nutrition.FindAsync(id);
+            if (nutrition != null)
             {
-                _context.Nutrition.Remove(todoList);
+                _context.Nutrition.Remove(nutrition);
                 await _context.SaveChangesAsync();
-            }            
+            }
         }
     }
 }

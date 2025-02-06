@@ -2,6 +2,9 @@
 using KooliProjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -15,23 +18,43 @@ namespace KooliProjekt.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task List_ShouldReturnPagedResult()
+        public async Task Save_ShouldAddNewNutrition()
         {
             // Arrange
-            DbContext.Nutrition.AddRange(new List<Nutrition>
-            {
-                new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 },
-                new Nutrition { Eating_time = DateTime.Now, Nutrients = 15, Quantity = 10 }
-            });
-            await DbContext.SaveChangesAsync();
+            var nutrition = new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 };
 
             // Act
-            var result = await _nutritionService.List(1, 5);
+            await _nutritionService.Save(nutrition);
+            await DbContext.SaveChangesAsync();
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(2, result.Results.Count());
+            var savedNutrition = await DbContext.Nutrition.FirstOrDefaultAsync();
+            Assert.NotNull(savedNutrition);
+            Assert.Equal(10, savedNutrition.Nutrients);
+            Assert.Equal(5, savedNutrition.Quantity);
         }
+
+        [Fact]
+        public async Task Save_ShouldUpdateExistingNutrition()
+        {
+            // Arrange
+            var nutrition = new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 };
+            DbContext.Nutrition.Add(nutrition);
+            await DbContext.SaveChangesAsync();
+            var nutritionId = nutrition.id; // Get the ID after saving
+            DbContext.ChangeTracker.Clear(); // Detach the existing entity
+
+            //Act
+            nutrition.Nutrients = 15;
+            await _nutritionService.Save(nutrition);
+            await DbContext.SaveChangesAsync();
+
+            // Assert
+            var updatedNutrition = await DbContext.Nutrition.FindAsync(nutritionId);
+            Assert.NotNull(updatedNutrition);
+            Assert.Equal(15, updatedNutrition.Nutrients);
+        }
+
 
         [Fact]
         public async Task Get_ShouldReturnNutritionById()
@@ -47,21 +70,17 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(10, result.Nutrients);
+            Assert.Equal(5, result.Quantity);
         }
 
         [Fact]
-        public async Task Save_ShouldAddNewNutrition()
+        public async Task Get_ShouldReturnNullWhenNotFound()
         {
-            // Arrange
-            var nutrition = new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 };
-
             // Act
-            await _nutritionService.Save(nutrition);
+            var result = await _nutritionService.Get(999);
 
             // Assert
-            var savedNutrition = await DbContext.Nutrition.FirstOrDefaultAsync();
-            Assert.NotNull(savedNutrition);
-            Assert.Equal(10, savedNutrition.Nutrients);
+            Assert.Null(result);
         }
 
         [Fact]
@@ -74,10 +93,32 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _nutritionService.Delete(nutrition.id);
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var deletedNutrition = await DbContext.Nutrition.FindAsync(nutrition.id);
             Assert.Null(deletedNutrition);
+        }
+
+        [Fact]
+        public async Task List_ShouldReturnPagedNutrition()
+        {
+            // Arrange
+            DbContext.Nutrition.AddRange(new List<Nutrition>
+            {
+                new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 },
+                new Nutrition { Eating_time = DateTime.Now, Nutrients = 15, Quantity = 10 },
+                new Nutrition { Eating_time = DateTime.Now, Nutrients = 20, Quantity = 15 }
+            });
+            await DbContext.SaveChangesAsync();
+
+            // Act
+            var result = await _nutritionService.List(1, 2);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Results.Count());
+            Assert.Equal(3, result.RowCount);
         }
     }
 }
