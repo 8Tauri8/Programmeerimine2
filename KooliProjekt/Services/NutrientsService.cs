@@ -12,39 +12,50 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
+        // List method with dynamic page size
         public async Task<PagedResult<Nutrients>> List(int page, int pageSize)
         {
-            return await _context.Nutrients.GetPagedAsync(page, 5);
+            return await _context.Nutrients.GetPagedAsync(page, pageSize); // Use dynamic pageSize
         }
 
+        // Get method that returns null if the nutrient is not found
         public async Task<Nutrients> Get(int id)
         {
             var result = await _context.Nutrients.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Nutrients(); // Returns a default HealthData if null is found
+            return result; // Return null if not found
         }
 
-        public async Task Save(Nutrients list)
+        // Save method to add or update a nutrient
+        public async Task Save(Nutrients nutrient)
         {
-            if(list.id == 0)
+            if (nutrient.id == 0)
             {
-                _context.Add(list);
+                // Add new nutrient if id is 0
+                await _context.Nutrients.AddAsync(nutrient);
             }
             else
             {
-                _context.Update(list);
+                // Update existing nutrient if id is not 0
+                _context.Nutrients.Update(nutrient);
             }
 
             await _context.SaveChangesAsync();
         }
 
+        // Delete method to remove a nutrient by its id
         public async Task Delete(int id)
         {
-            var todoList = await _context.Nutrients.FindAsync(id);
-            if (todoList != null)
+            var nutrient = await _context.Nutrients.FindAsync(id);
+            if (nutrient != null)
             {
-                _context.Nutrients.Remove(todoList);
+                _context.Nutrients.Remove(nutrient);
                 await _context.SaveChangesAsync();
-            }            
+            }
+            else
+            {
+                // Optional: Throw an exception if the nutrient was not found
+                throw new KeyNotFoundException("Nutrient not found.");
+            }
         }
     }
 }
