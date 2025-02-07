@@ -17,8 +17,8 @@ namespace KooliProjekt.Services
             var healthData = await _context.HealthData.FindAsync(Id);
             if (healthData != null)
             {
-                _context.HealthData.Remove(healthData);  // Remove the entity from DbContext
-                await _context.SaveChangesAsync();      // Save changes to the database
+                _context.HealthData.Remove(healthData);  
+                await _context.SaveChangesAsync();      
             }
         }
 
@@ -55,14 +55,11 @@ namespace KooliProjekt.Services
                 }
                 else
                 {
-                    // If it doesn't exist, this is likely a situation where the entity has been deleted or does not exist in DB.
-                    // You can handle this case more gracefully by deciding whether to throw an exception or add a new one.
-                    // For now, let's add it as a new entry.
                     _context.HealthData.Add(healthData);
                 }
             }
 
-            await _context.SaveChangesAsync(); // Save changes to the database
+            await _context.SaveChangesAsync(); 
         }
 
     }
