@@ -1,5 +1,7 @@
 using KooliProjekt.Data;
 using Microsoft.EntityFrameworkCore;
+using KooliProjekt.Search; // Make sure this is included
+using System.Linq; // Make sure this is included
 
 namespace KooliProjekt.Services
 {
@@ -17,8 +19,8 @@ namespace KooliProjekt.Services
             var healthData = await _context.HealthData.FindAsync(Id);
             if (healthData != null)
             {
-                _context.HealthData.Remove(healthData);  
-                await _context.SaveChangesAsync();      
+                _context.HealthData.Remove(healthData);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -32,9 +34,19 @@ namespace KooliProjekt.Services
             return await _context.HealthData.AnyAsync(c => c.id == Id);
         }
 
-        public Task<PagedResult<HealthData>> List(int page, int pageSize)
+        public async Task<PagedResult<HealthData>> List(int page, int pageSize, HealthDatasSearch search = null)
         {
-            return _context.HealthData.GetPagedAsync(page, pageSize);
+            var query = _context.HealthData.AsQueryable();
+
+            if (search != null && !string.IsNullOrEmpty(search.Keyword))
+            {
+                query = query.Where(h =>
+                    EF.Functions.Like(h.Weight.ToString(), $"%{search.Keyword}%") ||
+                    EF.Functions.Like(h.Blood_pressure.ToString(), $"%{search.Keyword}%") ||
+                    EF.Functions.Like(h.Blood_sugar.ToString(), $"%{search.Keyword}%"));
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
         }
 
         public async Task Save(HealthData healthData)
@@ -59,8 +71,7 @@ namespace KooliProjekt.Services
                 }
             }
 
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
         }
-
     }
 }
