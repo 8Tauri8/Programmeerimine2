@@ -5,7 +5,7 @@ namespace KooliProjekt.Models
 {
     public class PatientsIndexModel
     {
-        public HealthDatasSearch Search { get; set; }
+        public PatientsSearch Search { get; set; }
         public PagedResult<Patient> Data { get; set; }
     }
 }
