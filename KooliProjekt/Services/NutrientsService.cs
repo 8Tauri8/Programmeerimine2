@@ -1,5 +1,7 @@
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace KooliProjekt.Services
 {
@@ -12,17 +14,28 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
-        // List method with dynamic page size
-        public async Task<PagedResult<Nutrients>> List(int page, int pageSize)
+        // List method with dynamic page size and search
+        public async Task<PagedResult<Nutrients>> List(int page, int pageSize, string search = null)
         {
-            return await _context.Nutrients.GetPagedAsync(page, pageSize); // Use dynamic pageSize
+            var query = _context.Nutrients.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(n =>
+                    EF.Functions.Like(n.Name, $"%{search}%") ||
+                    EF.Functions.Like(n.Sugar.ToString(), $"%{search}%") ||
+                    EF.Functions.Like(n.Fat.ToString(), $"%{search}%") ||
+                    EF.Functions.Like(n.Carbohydrates.ToString(), $"%{search}%"));
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
         }
 
         // Get method that returns null if the nutrient is not found
         public async Task<Nutrients> Get(int id)
         {
             var result = await _context.Nutrients.FirstOrDefaultAsync(m => m.id == id);
-            return result; // Return null if not found
+            return result;
         }
 
         // Save method to add or update a nutrient
@@ -56,6 +69,11 @@ namespace KooliProjekt.Services
                 // Optional: Throw an exception if the nutrient was not found
                 throw new KeyNotFoundException("Nutrient not found.");
             }
+        }
+
+        public Task<PagedResult<Nutrients>> List(int page, int pageSize, NutrientsSearch search)
+        {
+            throw new NotImplementedException();
         }
     }
 }

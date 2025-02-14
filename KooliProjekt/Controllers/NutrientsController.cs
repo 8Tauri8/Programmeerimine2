@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using KooliProjekt.Data;
 using KooliProjekt.Services;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.Controllers
 {
@@ -19,11 +20,15 @@ namespace KooliProjekt.Controllers
             _NutrientsService = NutrientsService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, NutrientsIndexModel model = null)
         {
+            model = model ?? new NutrientsIndexModel();
             int pageSize = 5;
-            return View(await _NutrientsService.List(page, pageSize));
+            // Assuming you have a List method in your service that accepts search parameters
+            model.Data = await _NutrientsService.List(page, pageSize, model.Search);
+            return View(model);
         }
+
 
         public async Task<IActionResult> Details(int? id)
         {
