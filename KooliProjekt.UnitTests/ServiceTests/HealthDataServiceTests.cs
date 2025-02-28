@@ -1,8 +1,10 @@
 ﻿using KooliProjekt.Data;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
+using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -23,7 +25,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _healthDataService.Save(healthData);
-            await DbContext.SaveChangesAsync(); // Ensure changes are saved to the in-memory database
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var savedHealthData = await DbContext.HealthData.FirstOrDefaultAsync();
@@ -42,7 +44,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Act
             healthData.Weight = 80.0f;
             await _healthDataService.Save(healthData);
-            await DbContext.SaveChangesAsync(); // Ensure changes are saved
+            await DbContext.SaveChangesAsync();
 
             // Assert
             var updatedHealthData = await DbContext.HealthData.FindAsync(healthData.id);
@@ -94,7 +96,7 @@ namespace KooliProjekt.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task List_ShouldReturnPagedHealthData()
+        public async Task List_ShouldReturnPagedResultsWithoutSearch()
         {
             // Arrange
             DbContext.HealthData.AddRange(new HealthData[]
@@ -111,6 +113,51 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.NotNull(result);
             Assert.Equal(2, result.Results.Count());
+            Assert.Equal(3, result.RowCount); // Total rows in the database
+        }
+
+        [Fact]
+        public async Task List_ShouldReturnPagedResultsWithSearchKeyword()
+        {
+            // Arrange
+            DbContext.HealthData.AddRange(new HealthData[]
+            {
+                new HealthData { Weight = 75.5f, Blood_pressure = 120.8f, Blood_sugar = 90.2f },
+                new HealthData { Weight = 80.0f, Blood_pressure = 130.5f, Blood_sugar = 95.7f },
+                new HealthData { Weight = 90.2f, Blood_pressure = 140.0f, Blood_sugar = 100.0f }
+            });
+            await DbContext.SaveChangesAsync();
+
+            var searchCriteria = new HealthDatasSearch { Keyword = "80" };
+
+            // Act
+            var result = await _healthDataService.List(1, 2, searchCriteria);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result.Results); // Only one record matches the keyword "80"
+        }
+
+        [Fact]
+        public async Task List_ShouldHandleEmptySearchKeyword()
+        {
+            // Arrange
+            DbContext.HealthData.AddRange(new HealthData[]
+            {
+                new HealthData { Weight = 75.5f, Blood_pressure = 120.8f, Blood_sugar = 90.2f },
+                new HealthData { Weight = 80.0f, Blood_pressure = 130.5f, Blood_sugar = 95.7f },
+                new HealthData { Weight = 90.2f, Blood_pressure = 140.0f, Blood_sugar = 100.0f }
+            });
+            await DbContext.SaveChangesAsync();
+
+            var searchCriteria = new HealthDatasSearch { Keyword = null };
+
+            // Act
+            var result = await _healthDataService.List(1, 2, searchCriteria);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Results.Count()); // All records are returned since no filtering is applied
             Assert.Equal(3, result.RowCount);
         }
 
