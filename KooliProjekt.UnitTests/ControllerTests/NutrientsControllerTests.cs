@@ -64,6 +64,80 @@ namespace KooliProjekt.UnitTests.ControllerTests
         }
 
         [Fact]
+        public async Task Index_should_handle_null_model()
+        {
+            // Arrange
+            var page = 1;
+            var pageSize = 5;
+            var data = new List<Nutrients>
+            {
+                new Nutrients { id = 1, Name = "Tõnis", Sugar = 34, Fat = 34, Carbohydrates = 54 },
+                new Nutrients { id = 2, Name = "Siim", Sugar = 12, Fat = 24, Carbohydrates = 56 },
+            };
+            var pagedResult = new PagedResult<Nutrients>
+            {
+                Results = data,
+                CurrentPage = page,
+                PageCount = 1,
+                PageSize = pageSize,
+                RowCount = 2
+            };
+
+            // Mock service method
+            _NutrientsServiceMock.Setup(x => x.List(page, pageSize, It.IsAny<NutrientsSearch>()))
+                                 .ReturnsAsync(pagedResult);
+
+            // Act
+            var result = await _controller.Index(page, null) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(string.IsNullOrEmpty(result.ViewName) || result.ViewName == "Index");
+
+            var model = result.Model as NutrientsIndexModel;
+            Assert.NotNull(model);
+            Assert.Equal(pagedResult, model.Data);
+        }
+
+        [Fact]
+        public async Task Index_should_handle_null_search()
+        {
+            // Arrange
+            var page = 1;
+            var pageSize = 5;
+            var data = new List<Nutrients>
+            {
+                new Nutrients { id = 1, Name = "Tõnis", Sugar = 34, Fat = 34, Carbohydrates = 54 },
+                new Nutrients { id = 2, Name = "Siim", Sugar = 12, Fat = 24, Carbohydrates = 56 },
+            };
+            var pagedResult = new PagedResult<Nutrients>
+            {
+                Results = data,
+                CurrentPage = page,
+                PageCount = 1,
+                PageSize = pageSize,
+                RowCount = 2
+            };
+
+            // Mock service method
+            _NutrientsServiceMock.Setup(x => x.List(page, pageSize, It.IsAny<NutrientsSearch>()))
+                                 .ReturnsAsync(pagedResult);
+
+            var indexModel = new NutrientsIndexModel();
+
+            // Act
+            var result = await _controller.Index(page, indexModel) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.True(string.IsNullOrEmpty(result.ViewName) || result.ViewName == "Index");
+
+            var model = result.Model as NutrientsIndexModel;
+            Assert.NotNull(model);
+            Assert.Equal(pagedResult, model.Data);
+        }
+
+        [Fact]
         public async Task Details_should_return_notfound_when_id_is_missing()
         {
             int? id = null;
