@@ -13,16 +13,16 @@
 <form method="get">
     <div class="form-group">
         <label class="control-label">Name:</label>
-        <input type="text" name="Name" class="form-control" value="@Model?.Search?.Name" />
+        <input type="text" name="Search.Name" class="form-control" value="@Model?.Search?.Name ?? string.Empty" />
     </div>
     <div class="form-group">
         <label class="control-label">Sugar:</label>
         <div class="row">
             <div class="col-md-6">
-                <input type="number" name="MinSugar" class="form-control" placeholder="Min" value="@Model?.Search?.MinSugar" />
+                <input type="number" name="Search.MinSugar" class="form-control" placeholder="Min" value="@Model?.Search?.MinSugar ?? 0" />
             </div>
             <div class="col-md-6">
-                <input type="number" name="MaxSugar" class="form-control" placeholder="Max" value="@Model?.Search?.MaxSugar" />
+                <input type="number" name="Search.MaxSugar" class="form-control" placeholder="Max" value="@Model?.Search?.MaxSugar ?? 0" />
             </div>
         </div>
     </div>
@@ -30,10 +30,10 @@
         <label class="control-label">Fat:</label>
         <div class="row">
             <div class="col-md-6">
-                <input type="number" name="MinFat" class="form-control" placeholder="Min" value="@Model?.Search?.MinFat" />
+                <input type="number" name="Search.MinFat" class="form-control" placeholder="Min" value="@Model?.Search?.MinFat ?? 0" />
             </div>
             <div class="col-md-6">
-                <input type="number" name="MaxFat" class="form-control" placeholder="Max" value="@Model?.Search?.MaxFat" />
+                <input type="number" name="Search.MaxFat" class="form-control" placeholder="Max" value="@Model?.Search?.MaxFat ?? 0" />
             </div>
         </div>
     </div>
@@ -41,10 +41,10 @@
         <label class="control-label">Carbohydrates:</label>
         <div class="row">
             <div class="col-md-6">
-                <input type="number" name="MinCarbohydrates" class="form-control" placeholder="Min" value="@Model?.Search?.MinCarbohydrates" />
+                <input type="number" name="Search.MinCarbohydrates" class="form-control" placeholder="Min" value="@Model?.Search?.MinCarbohydrates ?? 0" />
             </div>
             <div class="col-md-6">
-                <input type="number" name="MaxCarbohydrates" class="form-control" placeholder="Max" value="@Model?.Search?.MaxCarbohydrates" />
+                <input type="number" name="Search.MaxCarbohydrates" class="form-control" placeholder="Max" value="@Model?.Search?.MaxCarbohydrates ?? 0" />
             </div>
         </div>
     </div>

@@ -1,11 +1,13 @@
 ﻿using KooliProjekt.Controllers;
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xunit;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.UnitTests.ControllerTests
 {
@@ -23,7 +25,9 @@ namespace KooliProjekt.UnitTests.ControllerTests
         [Fact]
         public async Task Index_should_return_view_and_data()
         {
+            // Arrange
             var page = 1;
+            var pageSize = 5;
             var data = new List<HealthData>
             {
                 new HealthData { id = 1, Weight = 68, Blood_pressure = 10, Blood_sugar = 32},
@@ -32,23 +36,31 @@ namespace KooliProjekt.UnitTests.ControllerTests
             var pagedResult = new PagedResult<HealthData>
             {
                 Results = data,
-                CurrentPage = 1,
+                CurrentPage = page,
                 PageCount = 1,
-                PageSize = 5,
+                PageSize = pageSize,
                 RowCount = 2
             };
+
+            // Mock the List method, explicitly handling the optional search parameter.
             _HealthDataServiceMock
-                .Setup(x => x.List(page, It.IsAny<int>()))
+                .Setup(x => x.List(page, pageSize, It.IsAny<Search.HealthDatasSearch>()))
                 .ReturnsAsync(pagedResult);
 
-            var result = await _controller.Index(page) as ViewResult;
+            // Act
+            var result = await _controller.Index(page, new HealthDatasIndexModel()) as ViewResult; // Pass in a model as parameter
 
+            // Assert
             Assert.NotNull(result);
             Assert.True(
                 string.IsNullOrEmpty(result.ViewName) ||
                 result.ViewName == "Index"
             );
-            Assert.Equal(pagedResult, result.Model);
+
+            // Correctly compare the model, which should be a HealthDatasIndexModel
+            var model = result.Model as HealthDatasIndexModel;
+            Assert.NotNull(model);
+            Assert.Equal(pagedResult, model.Data); //checks if the pagedResult is equal to the model.Data PagedResult
         }
 
         [Fact]
@@ -314,4 +326,3 @@ namespace KooliProjekt.UnitTests.ControllerTests
         }
     }
 }
-

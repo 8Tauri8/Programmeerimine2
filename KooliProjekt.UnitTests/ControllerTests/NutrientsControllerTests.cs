@@ -1,11 +1,13 @@
 ﻿using KooliProjekt.Controllers;
 using KooliProjekt.Data;
+using KooliProjekt.Models;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace KooliProjekt.UnitTests.ControllerTests
 {
@@ -23,27 +25,42 @@ namespace KooliProjekt.UnitTests.ControllerTests
         [Fact]
         public async Task Index_should_return_view_and_data()
         {
+            // Arrange
             var page = 1;
+            var pageSize = 5;
             var data = new List<Nutrients>
             {
-                new Nutrients { id = 1, Name = "Tõnis", Sugar = 34, Fat = 34, Carbohydrates = 54},
-                new Nutrients { id = 2, Name = "Siim", Sugar = 12, Fat = 24, Carbohydrates = 56},
+                new Nutrients { id = 1, Name = "Tõnis", Sugar = 34, Fat = 34, Carbohydrates = 54 },
+                new Nutrients { id = 2, Name = "Siim", Sugar = 12, Fat = 24, Carbohydrates = 56 },
             };
             var pagedResult = new PagedResult<Nutrients>
             {
                 Results = data,
-                CurrentPage = 1,
+                CurrentPage = page,
                 PageCount = 1,
-                PageSize = 5,
+                PageSize = pageSize,
                 RowCount = 2
             };
-            _NutrientsServiceMock.Setup(x => x.List(page, It.IsAny<int>())).ReturnsAsync(pagedResult);
 
-            var result = await _controller.Index(page) as ViewResult;
+            // Mock service method
+            _NutrientsServiceMock.Setup(x => x.List(page, pageSize, It.IsAny<NutrientsSearch>()))
+                                 .ReturnsAsync(pagedResult);
 
+            var indexModel = new NutrientsIndexModel
+            {
+                Search = new NutrientsSearch() // Ensure Search is initialized
+            };
+
+            // Act
+            var result = await _controller.Index(page, indexModel) as ViewResult;
+
+            // Assert
             Assert.NotNull(result);
             Assert.True(string.IsNullOrEmpty(result.ViewName) || result.ViewName == "Index");
-            Assert.Equal(pagedResult, result.Model);
+
+            var model = result.Model as NutrientsIndexModel;
+            Assert.NotNull(model);
+            Assert.Equal(pagedResult, model.Data);
         }
 
         [Fact]

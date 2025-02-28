@@ -1,117 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using KooliProjekt.Data;
-using KooliProjekt.Services;
+﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
 using KooliProjekt.Search;
+using KooliProjekt.Services;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
 {
     public class NutrientsController : Controller
     {
-        private readonly INutrientsService _NutrientsService;
+        private readonly INutrientsService _nutrientsService;
 
-        public NutrientsController(INutrientsService NutrientsService)
+        public NutrientsController(INutrientsService nutrientsService)
         {
-            _NutrientsService = NutrientsService;
+            _nutrientsService = nutrientsService;
         }
 
-        public async Task<IActionResult> Index(int page = 1, NutrientsIndexModel model = null)
+        public async Task<IActionResult> Index(int page, NutrientsIndexModel model)
         {
-            // Ensure the model is not null
-            model = model ?? new NutrientsIndexModel();
-
-            // Initialize the Search property if it's null
-            model.Search = model.Search ?? new NutrientsSearch();
-
-            int pageSize = 5;
-
-            // Map form data to NutrientsSearch
-            if (HttpContext.Request.Query.ContainsKey("Name"))
+            // Ensure model and its properties are initialized
+            if (model == null)
             {
-                model.Search.Name = HttpContext.Request.Query["Name"].ToString();
+                model = new NutrientsIndexModel();
             }
-            if (HttpContext.Request.Query.ContainsKey("MinSugar"))
+            if (model.Search == null)
             {
-                if (float.TryParse(HttpContext.Request.Query["MinSugar"], out float minSugar))
-                {
-                    model.Search.MinSugar = minSugar;
-                }
-            }
-            if (HttpContext.Request.Query.ContainsKey("MaxSugar"))
-            {
-                if (float.TryParse(HttpContext.Request.Query["MaxSugar"], out float maxSugar))
-                {
-                    model.Search.MaxSugar = maxSugar;
-                }
-            }
-            if (HttpContext.Request.Query.ContainsKey("MinFat"))
-            {
-                if (float.TryParse(HttpContext.Request.Query["MinFat"], out float minFat))
-                {
-                    model.Search.MinFat = minFat;
-                }
-            }
-            if (HttpContext.Request.Query.ContainsKey("MaxFat"))
-            {
-                if (float.TryParse(HttpContext.Request.Query["MaxFat"], out float maxFat))
-                {
-                    model.Search.MaxFat = maxFat;
-                }
-            }
-            if (HttpContext.Request.Query.ContainsKey("MinCarbohydrates"))
-            {
-                if (float.TryParse(HttpContext.Request.Query["MinCarbohydrates"], out float minCarbohydrates))
-                {
-                    model.Search.MinCarbohydrates = minCarbohydrates;
-                }
-            }
-            if (HttpContext.Request.Query.ContainsKey("MaxCarbohydrates"))
-            {
-                if (float.TryParse(HttpContext.Request.Query["MaxCarbohydrates"], out float maxCarbohydrates))
-                {
-                    model.Search.MaxCarbohydrates = maxCarbohydrates;
-                }
+                model.Search = new NutrientsSearch();
             }
 
-            try
-            {
-                // Fetch data from the service
-                model.Data = await _NutrientsService.List(page, pageSize, model.Search);
-            }
-            catch (Exception ex)
-            {
-                // Log the exception and initialize an empty PagedResult
-                Console.WriteLine($"Error fetching data: {ex.Message}");
-                model.Data = new PagedResult<Nutrients>
-                {
-                    Results = new List<Nutrients>(),
-                    CurrentPage = page,
-                    PageSize = pageSize,
-                    RowCount = 0
-                };
-            }
+            // Fetch paginated data using the search criteria
+            var pagedResult = await _nutrientsService.List(page, 5, model.Search);
+            model.Data = pagedResult;
 
             return View(model);
         }
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
-            var nutrients = await _NutrientsService.Get(id.Value);
-            if (nutrients == null)
-            {
+            var nutrient = await _nutrientsService.Get(id.Value);
+            if (nutrient == null)
                 return NotFound();
-            }
 
-            return View(nutrients);
+            return View(nutrient);
         }
 
         public IActionResult Create()
@@ -120,74 +53,60 @@ namespace KooliProjekt.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
+        public async Task<IActionResult> Create(Nutrients nutrient)
         {
             if (ModelState.IsValid)
             {
-                await _NutrientsService.Save(nutrients);
+                await _nutrientsService.Save(nutrient);
                 return RedirectToAction(nameof(Index));
             }
-            return View(nutrients);
+
+            return View(nutrient);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
-            var nutrients = await _NutrientsService.Get(id.Value);
-            if (nutrients == null)
-            {
+            var nutrient = await _nutrientsService.Get(id.Value);
+            if (nutrient == null)
                 return NotFound();
-            }
 
-            return View(nutrients);
+            return View(nutrient);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,Name,Sugar,Fat,Carbohydrates")] Nutrients nutrients)
+        public async Task<IActionResult> Edit(int id, Nutrients nutrient)
         {
-            if (id != nutrients.id)
-            {
+            if (id != nutrient.id)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                await _NutrientsService.Save(nutrients);
+                await _nutrientsService.Save(nutrient);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(nutrients);
+            return View(nutrient);
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
+            if (!id.HasValue)
                 return NotFound();
-            }
 
-            var nutrients = await _NutrientsService.Get(id.Value);
-
-            if (nutrients == null)
-            {
+            var nutrient = await _nutrientsService.Get(id.Value);
+            if (nutrient == null)
                 return NotFound();
-            }
 
-
-            return View(nutrients);
+            return View(nutrient);
         }
 
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _NutrientsService.Delete(id);
+            await _nutrientsService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }
