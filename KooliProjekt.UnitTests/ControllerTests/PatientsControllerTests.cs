@@ -7,6 +7,8 @@ using Xunit;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
+using KooliProjekt.Search;
+using KooliProjekt.Models;
 
 namespace KooliProjekt.UnitTests.ControllerTests
 {
@@ -21,16 +23,18 @@ namespace KooliProjekt.UnitTests.ControllerTests
             _controller = new PatientsController(_PatientServiceMock.Object);
         }
 
+
+
         [Fact]
         public async Task Index_should_return_view_and_data()
         {
             // Arrange
             var page = 1;
             var data = new List<Patient>
-            {
-                new Patient { id = 1, Name = "Kutsu", HealthData = "Good", Nutrition = "Stable" },
-                new Patient { id = 2, Name = "Asvu", HealthData = "Bad", Nutrition = "Bad" }
-            };
+    {
+        new Patient { id = 1, Name = "Kutsu", HealthData = "Good", Nutrition = "Stable" },
+        new Patient { id = 2, Name = "Asvu", HealthData = "Bad", Nutrition = "Bad" }
+    };
             var pagedResult = new PagedResult<Patient>
             {
                 Results = data,
@@ -39,16 +43,21 @@ namespace KooliProjekt.UnitTests.ControllerTests
                 PageSize = 5,
                 RowCount = 2
             };
-            _PatientServiceMock.Setup(x => x.List(page, It.IsAny<int>())).ReturnsAsync(pagedResult);
+            var search = new PatientsSearch(); // Create a new PatientsSearch object
+            _PatientServiceMock.Setup(x => x.List(page, It.IsAny<int>(), search)).ReturnsAsync(pagedResult);
 
             // Act
-            var result = await _controller.Index(page) as ViewResult;
+            var result = await _controller.Index(page, search) as ViewResult;
 
             // Assert
             Assert.NotNull(result);
             Assert.True(string.IsNullOrEmpty(result.ViewName) || result.ViewName == "Index");
-            Assert.Equal(pagedResult, result.Model);
+
+            // Corrected assertion
+            var model = (PatientsIndexModel)result.Model;
+            Assert.Equal(pagedResult, model.Data);
         }
+
 
         [Fact]
         public async Task Details_should_return_notfound_when_id_is_missing()

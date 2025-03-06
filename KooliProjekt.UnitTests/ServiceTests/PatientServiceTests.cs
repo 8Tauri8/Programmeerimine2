@@ -3,7 +3,9 @@ using KooliProjekt.Services;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using KooliProjekt.Search;
 
 namespace KooliProjekt.UnitTests.ServiceTests
 {
@@ -27,9 +29,10 @@ namespace KooliProjekt.UnitTests.ServiceTests
             });
             await DbContext.SaveChangesAsync();
 
+            var search = new PatientsSearch(); // Create an empty search object
+
             // Act
-            var result = await _patientService.List(1, 5);
-            await DbContext.SaveChangesAsync();
+            var result = await _patientService.List(1, 5, search);
 
             // Assert
             Assert.NotNull(result);
@@ -46,7 +49,6 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             var result = await _patientService.Get(patient.id);
-            await DbContext.SaveChangesAsync();
 
             // Assert
             Assert.NotNull(result);
@@ -61,7 +63,6 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _patientService.Save(patient);
-            await DbContext.SaveChangesAsync();
 
             // Assert
             var savedPatient = await DbContext.Patient.FirstOrDefaultAsync();
@@ -76,13 +77,14 @@ namespace KooliProjekt.UnitTests.ServiceTests
             var patient = new Patient { Name = "Patient1", HealthData = "Data1", Nutrition = "Nutrition1" };
             DbContext.Patient.Add(patient);
             await DbContext.SaveChangesAsync();
+
             var patientId = patient.id;
+
             DbContext.ChangeTracker.Clear();
 
             // Act
             patient.Name = "UpdatedPatient";
             await _patientService.Save(patient);
-            await DbContext.SaveChangesAsync();
 
             // Assert
             var updatedPatient = await DbContext.Patient.FindAsync(patientId);
@@ -100,7 +102,6 @@ namespace KooliProjekt.UnitTests.ServiceTests
 
             // Act
             await _patientService.Delete(patient.id);
-            await DbContext.SaveChangesAsync();
 
             // Assert
             var deletedPatient = await DbContext.Patient.FindAsync(patient.id);
