@@ -40,6 +40,28 @@ namespace KooliProjekt.UnitTests.ServiceTests
         }
 
         [Fact]
+        public async Task List_ShouldFilterResultsBySearch()
+        {
+            // Arrange
+            DbContext.Patient.AddRange(new List<Patient>
+            {
+                new Patient { Name = "Patient1", HealthData = "Data1", Nutrition = "Nutrition1" },
+                new Patient { Name = "Patient2", HealthData = "Data2", Nutrition = "Nutrition2" }
+            });
+            await DbContext.SaveChangesAsync();
+
+            var search = new PatientsSearch { Name = "Patient1" };
+
+            // Act
+            var result = await _patientService.List(1, 5, search);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Single(result.Results);
+            Assert.Equal("Patient1", result.Results.First().Name);
+        }
+
+        [Fact]
         public async Task Get_ShouldReturnPatientById()
         {
             // Arrange
@@ -53,6 +75,17 @@ namespace KooliProjekt.UnitTests.ServiceTests
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Patient1", result.Name);
+        }
+
+        [Fact]
+        public async Task Get_ShouldReturnDefaultPatientWhenNotFound()
+        {
+            // Act
+            var result = await _patientService.Get(999);
+
+            // Assert
+            Assert.NotNull(result); // It should not be null, but a default Patient object
+            Assert.Equal(0, result.id); // Verify it's a default object
         }
 
         [Fact]
@@ -109,14 +142,12 @@ namespace KooliProjekt.UnitTests.ServiceTests
         }
 
         [Fact]
-        public async Task Get_ShouldReturnDefaultPatientWhenNotFound()
+        public async Task Delete_ShouldNotThrowWhenPatientNotFound()
         {
             // Act
-            var result = await _patientService.Get(999);
+            await _patientService.Delete(999);
 
-            // Assert
-            Assert.NotNull(result); // It should not be null, but a default Patient object
-            Assert.Equal(0, result.id); // Verify it's a default object
+            // Assert (no exception should be thrown)
         }
     }
 }
