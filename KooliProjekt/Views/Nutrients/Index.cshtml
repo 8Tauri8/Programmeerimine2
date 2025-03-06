@@ -104,31 +104,5 @@
 
 @if (Model.Data != null)
 {
-    @if (Model.Data.PageCount > 1)
-    {
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                @for (int i = 1; i <= Model.Data.PageCount; i++)
-                {
-                    <li class="page-item @(Model.Data.CurrentPage == i ? "active" : "")">
-                        <a class="page-link" asp-action="Index"
-                           asp-route-page="@i"
-                           asp-route-Search.Name="@Model.Search?.Name"
-                           asp-route-Search.MinSugar="@Model.Search?.MinSugar"
-                           asp-route-Search.MaxSugar="@Model.Search?.MaxSugar"
-                           asp-route-Search.MinFat="@Model.Search?.MinFat"
-                           asp-route-Search.MaxFat="@Model.Search?.MaxFat"
-                           asp-route-Search.MinCarbohydrates="@Model.Search?.MinCarbohydrates"
-                           asp-route-Search.MaxCarbohydrates="@Model.Search?.MaxCarbohydrates">
-                            @i
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
-    }
-}
-else
-{
-    <p>No nutrients found.</p>
+    @(await Component.InvokeAsync<PagerViewComponent>(Model.Data))
 }

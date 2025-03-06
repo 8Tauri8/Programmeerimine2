@@ -1,18 +1,20 @@
-html {
-  font-size: 14px;
+.pagination .page-link {
+    border: none;
+    padding: 8px 16px; /* Adjust padding for button-like appearance */
+    color red;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
+    .pagination .page-link.btn-primary {
+        background-color: #007bff; /* Active link background color */
+        color: #fff; /* Active link text color */
+    }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+    .pagination .page-link.btn-light {
+        background-color: #f0f0f0; /* Inactive link background color */
+        color: #333; /* Inactive link text color */
+    }
 
-body {
-  margin-bottom: 60px;
-}
+    .pagination .page-link:hover {
+        background-color: #0056b3; /* Hover background color */
+        color: #fff; /* Hover text color */
+    }
