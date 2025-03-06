@@ -1,4 +1,5 @@
 using KooliProjekt.Data;
+using KooliProjekt.Search;
 using Microsoft.EntityFrameworkCore;
 
 namespace KooliProjekt.Services
@@ -12,15 +13,21 @@ namespace KooliProjekt.Services
             _context = context;
         }
 
-        public async Task<PagedResult<Patient>> List(int page, int pageSize)
+        public async Task<PagedResult<Patient>> List(int page, int pageSize, PatientsSearch search)
         {
-            return await _context.Patient.GetPagedAsync(page, 5);
+            var query = _context.Patient.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search?.Name))
+            {
+                query = query.Where(p => EF.Functions.Like(p.Name, $"%{search.Name}%"));
+            }
+
+            return await query.GetPagedAsync(page, pageSize);
         }
 
         public async Task<Patient> Get(int id)
         {
-            var result = await _context.Patient.FirstOrDefaultAsync(m => m.id == id);
-            return result ?? new Patient(); // Returns a default Patient if null is found
+            return await _context.Patient.FirstOrDefaultAsync(m => m.id == id) ?? new Patient();
         }
 
         public async Task Save(Patient patient)

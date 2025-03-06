@@ -1,8 +1,8 @@
 ﻿using KooliProjekt.Data;
 using KooliProjekt.Models;
+using KooliProjekt.Search;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace KooliProjekt.Controllers
@@ -16,10 +16,16 @@ namespace KooliProjekt.Controllers
             _PatientService = patientService;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, PatientsSearch search = null)
         {
             int pageSize = 5;
-            return View(await _PatientService.List(page, pageSize));
+            var model = new PatientsIndexModel
+            {
+                Search = search,
+                Data = await _PatientService.List(page, pageSize, search)
+            };
+
+            return View(model);
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -49,7 +55,7 @@ namespace KooliProjekt.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _PatientService.Save(patient);  
+                await _PatientService.Save(patient);
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
@@ -81,7 +87,7 @@ namespace KooliProjekt.Controllers
 
             if (ModelState.IsValid)
             {
-                await _PatientService.Save(patient); 
+                await _PatientService.Save(patient);
                 return RedirectToAction(nameof(Index));
             }
             return View(patient);
@@ -107,7 +113,7 @@ namespace KooliProjekt.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _PatientService.Delete(id); 
+            await _PatientService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

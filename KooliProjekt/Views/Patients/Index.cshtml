@@ -1,4 +1,4 @@
-﻿@model PagedResult<KooliProjekt.Data.Patient>
+﻿@model KooliProjekt.Models.PatientsIndexModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,26 +9,35 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form method="get">
+    <div class="form-group">
+        <label>Name:</label>
+        <input asp-for="Search.Name" class="form-control" placeholder="Search by name" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Results)
+        @foreach (var item in Model.Data.Results)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
+            <tr>
+                <td>@item.Name</td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-@(await Component.InvokeAsync<PagerViewComponent>(Model))
+
+@(await Component.InvokeAsync<PagerViewComponent>(Model.Data))
