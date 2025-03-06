@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using KooliProjekt.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
 
@@ -6,19 +7,31 @@ namespace KooliProjekt.IntegrationTests.Helpers
 {
     public abstract class TestBase : IDisposable
     {
-        public WebApplicationFactory<FakeStartup> Factory { get; }
+        protected WebApplicationFactory<FakeStartup> Factory { get; }
 
         public TestBase()
         {
             Factory = new TestApplicationFactory<FakeStartup>();
         }
 
-        public void Dispose()
+        public HttpClient CreateClient()
         {
-            var dbContext = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
-            dbContext.Database.EnsureDeleted();
+            return Factory.CreateClient();
         }
 
-        // Add your other helper methods here
+        public ApplicationDbContext GetDbContext()
+        {
+            return (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
+        }
+
+        public void Dispose()
+        {
+            var dbContext = GetDbContext();
+            if (dbContext != null)
+            {
+                dbContext.Database.EnsureDeleted();
+            }
+            Factory.Dispose();
+        }
     }
 }

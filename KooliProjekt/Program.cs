@@ -2,7 +2,7 @@ using KooliProjekt.Data;
 using KooliProjekt.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KooliProjekt
 {
@@ -12,7 +12,6 @@ namespace KooliProjekt
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -22,16 +21,11 @@ namespace KooliProjekt
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
-
             builder.Services.AddScoped<IHealthDataService, HealthDataService>();
             builder.Services.AddScoped<INutrientsService, NutrientsService>();
             builder.Services.AddScoped<IPatientService, PatientService>();
             builder.Services.AddScoped<INutritionService, NutritionService>();
             builder.Services.AddScoped<IQuantityService, QuantityService>();
-            //abc
-
-
-
 
             var app = builder.Build();
 
@@ -43,7 +37,6 @@ namespace KooliProjekt
             }
 #endif
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseMigrationsEndPoint();
@@ -51,7 +44,6 @@ namespace KooliProjekt
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -66,10 +58,13 @@ namespace KooliProjekt
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(
+                name: "healthdatas",
+                pattern: "HealthDatas/{action=Index}/{id?}",
+                defaults: new { controller = "HealthDatas" });
             app.MapRazorPages();
 
             app.Run();
-
         }
     }
 }
