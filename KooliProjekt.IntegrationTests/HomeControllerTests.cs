@@ -13,7 +13,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Arrange
-            var client = Factory.CreateClient();
+            var client = CreateClient();
 
             // Act
             var response = await client.GetAsync(url);
@@ -22,20 +22,5 @@ namespace KooliProjekt.IntegrationTests
             response.EnsureSuccessStatusCode();
             Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
         }
-
-        //[Fact]
-
-        //public async Task Get_AnonymousCanAccessPrivacy()
-        //{
-        //    // Arrange
-        //    using var client = Factory.CreateClient();
-
-        //    // Act
-        //    using var response = await client.GetAsync("/Home/Privacy");
-
-        //    // Assert
-        //    response.EnsureSuccessStatusCode();
-        //    Assert.Equal("text/html; charset=utf-8", response.Content.Headers.ContentType.ToString());
-        //}
     }
 }
