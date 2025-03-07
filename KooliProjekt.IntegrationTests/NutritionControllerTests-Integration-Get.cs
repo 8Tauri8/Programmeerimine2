@@ -9,23 +9,24 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class NutritionControllerTests : TestBase
+    public class NutritionControllerTests_GET : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public NutritionControllerTests()
+        public NutritionControllerTests_GET()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
         }
 
+        [Fact]
         public async Task Index_should_return_correct_response()
         {
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/Nutrition/Index");
+            using var response = await _client.GetAsync("/Nutritions/Index");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -37,7 +38,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/Nutrition/Details/");
+            using var response = await _client.GetAsync("/Nutritions/Details/");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -49,7 +50,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/Nutrition/Details/100");
+            using var response = await _client.GetAsync("/Nutritions/Details/100");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -64,7 +65,7 @@ namespace KooliProjekt.IntegrationTests
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/Nutritions/Details/" + nutrition.id); // Muutke URL-i kui vaja
+            using var response = await _client.GetAsync("/Nutritions/Details/" + nutrition.id);
 
             // Assert
             response.EnsureSuccessStatusCode();

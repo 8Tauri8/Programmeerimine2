@@ -25,7 +25,7 @@ namespace KooliProjekt.Services
 
         public async Task Save(Quantity list)
         {
-            if(list.id == 0)
+            if (list.id == 0)
             {
                 _context.Add(list);
             }
@@ -36,6 +36,7 @@ namespace KooliProjekt.Services
 
             await _context.SaveChangesAsync();
         }
+
 
         public async Task Delete(int id)
         {

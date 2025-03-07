@@ -8,12 +8,12 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class HealthDatasControllerTests : TestBase
+    public class HealthDatasControllerTests_GET : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public HealthDatasControllerTests()
+        public HealthDatasControllerTests_GET()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
