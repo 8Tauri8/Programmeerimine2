@@ -18,14 +18,13 @@ namespace KooliProjekt.IntegrationTests
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
         }
-
         [Fact]
         public async Task Index_should_return_correct_response()
         {
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/Quantity/Index");
+            using var response = await _client.GetAsync("/Quantities/Index"); // Muutke URL-i kui vaja
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -64,7 +63,7 @@ namespace KooliProjekt.IntegrationTests
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/Quantity/Details/" + quantity.id);
+            using var response = await _client.GetAsync("/Quantities/Details/" + quantity.id); // Muutke URL-i kui vaja
 
             // Assert
             response.EnsureSuccessStatusCode();

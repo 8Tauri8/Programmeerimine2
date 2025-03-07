@@ -25,7 +25,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/Patient/Index");
+            using var response = await _client.GetAsync("/Patients/Index"); // Muutke URL-i kui vaja
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -64,7 +64,7 @@ namespace KooliProjekt.IntegrationTests
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/Patient/Details/" + patient.id);
+            using var response = await _client.GetAsync("/Patients/Details/" + patient.id); // Muutke URL-i kui vaja
 
             // Assert
             response.EnsureSuccessStatusCode();

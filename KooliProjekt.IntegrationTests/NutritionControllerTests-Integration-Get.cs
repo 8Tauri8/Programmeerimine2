@@ -20,7 +20,6 @@ namespace KooliProjekt.IntegrationTests
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
         }
 
-        [Fact]
         public async Task Index_should_return_correct_response()
         {
             // Arrange
@@ -65,7 +64,7 @@ namespace KooliProjekt.IntegrationTests
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/Nutrition/Details/" + nutrition.id);
+            using var response = await _client.GetAsync("/Nutritions/Details/" + nutrition.id); // Muutke URL-i kui vaja
 
             // Assert
             response.EnsureSuccessStatusCode();

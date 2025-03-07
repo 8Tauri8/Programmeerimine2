@@ -38,6 +38,7 @@ namespace KooliProjekt.Controllers
             return View(nutrition);
         }
 
+
         public IActionResult Create()
         {
             return View();
