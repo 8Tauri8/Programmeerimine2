@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using KooliProjekt.Data;
@@ -8,12 +9,12 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class HealthDatasControllerTests : TestBase
+    public class NutritionControllerTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public HealthDatasControllerTests()
+        public NutritionControllerTests()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
@@ -25,7 +26,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Index");
+            using var response = await _client.GetAsync("/Nutrition/Index");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -37,7 +38,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/");
+            using var response = await _client.GetAsync("/Nutrition/Details/");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -49,7 +50,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/100");
+            using var response = await _client.GetAsync("/Nutrition/Details/100");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -59,12 +60,12 @@ namespace KooliProjekt.IntegrationTests
         public async Task Details_should_return_ok_when_id_exists()
         {
             // Arrange
-            var healthData = new HealthData { Weight = 70, Blood_pressure = 120, Blood_sugar = 5 };
-            _context.HealthData.Add(healthData);
+            var nutrition = new Nutrition { Eating_time = DateTime.Now, Nutrients = 10, Quantity = 5 };
+            _context.Nutrition.Add(nutrition);
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/" + healthData.id);
+            using var response = await _client.GetAsync("/Nutrition/Details/" + nutrition.id);
 
             // Assert
             response.EnsureSuccessStatusCode();

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Net.Http;
-using KooliProjekt.Data;
+﻿using KooliProjekt.Data;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System;
+using System.Net.Http;
 
 namespace KooliProjekt.IntegrationTests.Helpers
 {
     public abstract class TestBase : IDisposable
     {
-        protected WebApplicationFactory<FakeStartup> Factory { get; }
+        public WebApplicationFactory<FakeStartup> Factory { get; }
 
         public TestBase()
         {

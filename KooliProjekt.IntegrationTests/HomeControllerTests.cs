@@ -13,7 +13,7 @@ namespace KooliProjekt.IntegrationTests
         public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
         {
             // Arrange
-            var client = CreateClient();
+            var client = Factory.CreateClient();
 
             // Act
             var response = await client.GetAsync(url);

@@ -8,12 +8,12 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class HealthDatasControllerTests : TestBase
+    public class NutrientsControllerTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public HealthDatasControllerTests()
+        public NutrientsControllerTests()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
@@ -25,7 +25,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Index");
+            using var response = await _client.GetAsync("/Nutrients/Index");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -37,7 +37,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/");
+            using var response = await _client.GetAsync("/Nutrients/Details/");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -49,7 +49,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/100");
+            using var response = await _client.GetAsync("/Nutrients/Details/100");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -59,12 +59,12 @@ namespace KooliProjekt.IntegrationTests
         public async Task Details_should_return_ok_when_id_exists()
         {
             // Arrange
-            var healthData = new HealthData { Weight = 70, Blood_pressure = 120, Blood_sugar = 5 };
-            _context.HealthData.Add(healthData);
+            var nutrient = new Nutrients { Name = "Test", Sugar = 10, Fat = 5, Carbohydrates = 20 };
+            _context.Nutrients.Add(nutrient);
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/" + healthData.id);
+            using var response = await _client.GetAsync("/Nutrients/Details/" + nutrient.id);
 
             // Assert
             response.EnsureSuccessStatusCode();

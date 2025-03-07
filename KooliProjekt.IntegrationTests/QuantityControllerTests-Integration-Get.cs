@@ -8,12 +8,12 @@ using Xunit;
 namespace KooliProjekt.IntegrationTests
 {
     [Collection("Sequential")]
-    public class HealthDatasControllerTests : TestBase
+    public class QuantityControllerTests : TestBase
     {
         private readonly HttpClient _client;
         private readonly ApplicationDbContext _context;
 
-        public HealthDatasControllerTests()
+        public QuantityControllerTests()
         {
             _client = Factory.CreateClient();
             _context = (ApplicationDbContext)Factory.Services.GetService(typeof(ApplicationDbContext));
@@ -25,7 +25,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Index");
+            using var response = await _client.GetAsync("/Quantity/Index");
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -37,7 +37,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/");
+            using var response = await _client.GetAsync("/Quantity/Details/");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -49,7 +49,7 @@ namespace KooliProjekt.IntegrationTests
             // Arrange
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/100");
+            using var response = await _client.GetAsync("/Quantity/Details/100");
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
@@ -59,12 +59,12 @@ namespace KooliProjekt.IntegrationTests
         public async Task Details_should_return_ok_when_id_exists()
         {
             // Arrange
-            var healthData = new HealthData { Weight = 70, Blood_pressure = 120, Blood_sugar = 5 };
-            _context.HealthData.Add(healthData);
+            var quantity = new Quantity { Nutrients = 10, Amount = 5 };
+            _context.Quantity.Add(quantity);
             _context.SaveChanges();
 
             // Act
-            using var response = await _client.GetAsync("/HealthDatas/Details/" + healthData.id);
+            using var response = await _client.GetAsync("/Quantity/Details/" + quantity.id);
 
             // Assert
             response.EnsureSuccessStatusCode();

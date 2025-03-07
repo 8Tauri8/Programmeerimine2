@@ -1,7 +1,10 @@
 ﻿using System;
+using KooliProjekt.Controllers;
 using KooliProjekt.Data;
+using KooliProjekt.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,29 +20,38 @@ namespace KooliProjekt.IntegrationTests.Helpers
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
+            var dbGuid = Guid.NewGuid().ToString();
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString());
+                options.UseInMemoryDatabase(databaseName: dbGuid);
             });
 
-            services.AddControllersWithViews();
-            services.AddRouting();
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddControllersWithViews()
+                    .AddApplicationPart(typeof(HomeController).Assembly);
+
+            services.AddScoped<IHealthDataService, HealthDataService>();
+            services.AddScoped<INutrientsService, NutrientsService>();
+            services.AddScoped<INutritionService, NutritionService>();
+            services.AddScoped<IPatientService, PatientService>();
+            services.AddScoped<IQuantityService, QuantityService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
-                    name: "healthdatas",
-                    pattern: "HealthDatas/{action=Index}/{id?}",
-                    defaults: new { controller = "HealthDatas" });
+                    pattern: "{controller=Home}/{action=Index}/{id?}/{pathStr?}");
             });
         }
     }
