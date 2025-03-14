@@ -46,23 +46,18 @@ namespace KooliProjekt.Controllers
         }
 
         // PUT: api/HealthData/5
+        // PUT api/<TodoListsApiController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] HealthData healthData)
+        public async Task<IActionResult> Put(int id, [FromBody] HealthData list)
         {
-            if (id != healthData.id)
+            if (id != list.id)
             {
                 return BadRequest();
             }
 
-            var existingHealthData = await _healthDataService.Get(id);
-            if (existingHealthData == null)
-            {
-                return NotFound();
-            }
+            await _healthDataService.Save(list);
 
-            await _healthDataService.Save(healthData);
-
-            return NoContent();
+            return Ok();
         }
 
         // DELETE: api/HealthData/5

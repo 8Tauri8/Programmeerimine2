@@ -38,7 +38,7 @@ namespace KooliProjekt.Services
             }
             else
             {
-                _context.Patient.Update(patient);
+                _context.Entry(patient).State = EntityState.Modified;
             }
 
             await _context.SaveChangesAsync();
