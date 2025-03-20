@@ -8,8 +8,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using WpfApp.Api;
 using WpfApp;
+using WpfApp.Api;
 
 namespace WpfApp;
 
@@ -38,6 +38,7 @@ public partial class MainWindow : Window
                             );
             return (result == MessageBoxResult.Yes);
         };
+
         viewModel.OnError = (error) =>
         {
             MessageBox.Show(
@@ -51,5 +52,15 @@ public partial class MainWindow : Window
         DataContext = viewModel;
 
         await viewModel.Load();
+    }
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
     }
 }

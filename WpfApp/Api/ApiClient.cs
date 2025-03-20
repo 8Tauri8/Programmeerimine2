@@ -19,7 +19,7 @@ namespace WpfApp.Api
 
             try
             {
-                result.Value = await _httpClient.GetFromJsonAsync<List<HealthData>>("HealthDatas");
+                result.Value = await _httpClient.GetFromJsonAsync<List<HealthData>>("healthdata");
             }
             catch(Exception ex)
             {
@@ -33,17 +33,17 @@ namespace WpfApp.Api
         {
             if(list.id == 0)
             {
-                await _httpClient.PostAsJsonAsync("HealthDatas", list);
+                await _httpClient.PostAsJsonAsync("healthdata", list);
             }
             else
             {
-                await _httpClient.PutAsJsonAsync("HealthDatas/" + list.id, list);
+                await _httpClient.PutAsJsonAsync("healthdata/" + list.id, list);
             }
         }
 
         public async Task Delete(int id)
         {
-            await _httpClient.DeleteAsync("HealthDatas/" + id);
+            await _httpClient.DeleteAsync("healthdata/" + id);
         }
     }
 }

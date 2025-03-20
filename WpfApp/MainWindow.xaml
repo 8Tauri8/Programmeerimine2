@@ -14,7 +14,7 @@
                 </Grid.ColumnDefinitions>
 
                 <DataGrid 
-            x:Name="AmountGrid"
+            x:Name="HealthDataGrid"
             Grid.Column="0"
             ItemsSource="{Binding Lists}"
             SelectedItem="{Binding SelectedItem}"
