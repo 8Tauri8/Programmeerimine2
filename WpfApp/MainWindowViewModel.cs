@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
 using WpfApp.Api;
+using WpfApp.Api;
+using WpfApp;
 
 namespace WpfApp
 {
@@ -51,10 +53,10 @@ namespace WpfApp
                 // Execute
                 async list =>
                 {
-                    if(ConfirmDelete != null)
+                    if (ConfirmDelete != null)
                     {
                         var result = ConfirmDelete(SelectedItem);
-                        if(!result)
+                        if (!result)
                         {
                             return;
                         }
@@ -78,9 +80,9 @@ namespace WpfApp
 
             var lists = await _apiClient.List();
 
-            if(lists.HasError)
+            if (lists.HasError)
             {
-                if(OnError != null)
+                if (OnError != null)
                 {
                     OnError(lists.Error);
                 }
@@ -88,7 +90,7 @@ namespace WpfApp
                 return;
             }
 
-            foreach(var list in lists.Value)
+            foreach (var list in lists.Value)
             {
                 Lists.Add(list);
             }
