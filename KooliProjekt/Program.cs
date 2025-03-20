@@ -33,7 +33,7 @@ namespace KooliProjekt
             using (var scope = app.Services.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                SeedData.Generate(dbContext); // kutsume SeedData.Generate meetodi
+                SeedData.Generate(dbContext); 
             }
 #endif
 
