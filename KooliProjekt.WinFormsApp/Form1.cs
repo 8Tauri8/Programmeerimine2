@@ -51,7 +51,7 @@ namespace KooliProjekt.WinFormsApp
             }
             else
             {
-                _selectedHealthData.id = 0; // New object
+                _selectedHealthData.id = 0;
             }
 
             _selectedHealthData.Weight = float.TryParse(WeightField.Text, out float weight) ? weight : 0;
@@ -73,7 +73,6 @@ namespace KooliProjekt.WinFormsApp
         private void NewButton_Click(object? sender, EventArgs e)
         {
             IdField.Text = string.Empty;
-            TitleField.Text = string.Empty;
             WeightField.Text = string.Empty;
             BloodPressureField.Text = string.Empty;
             BloodSugarField.Text = string.Empty;
@@ -90,7 +89,6 @@ namespace KooliProjekt.WinFormsApp
             if (healthdata == null)
             {
                 IdField.Text = string.Empty;
-                TitleField.Text = string.Empty;
                 WeightField.Text = string.Empty;
                 BloodPressureField.Text = string.Empty;
                 BloodSugarField.Text = string.Empty;
