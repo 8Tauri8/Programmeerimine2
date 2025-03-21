@@ -2,30 +2,16 @@
 {
     partial class Form1
     {
-        /// <summary>
-        ///  Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        ///  Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
-            {
                 components.Dispose();
-            }
+
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
-
-        /// <summary>
-        ///  Required method for Designer support - do not modify
-        ///  the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             TodoListsGrid = new DataGridView();
@@ -36,8 +22,17 @@
             NewButton = new Button();
             SaveButton = new Button();
             DeleteButton = new Button();
+
+            WeightLabel = new Label();
+            WeightField = new TextBox();
+            BloodPressureLabel = new Label();
+            BloodPressureField = new TextBox();
+            BloodSugarLabel = new Label();
+            BloodSugarField = new TextBox();
+
             ((System.ComponentModel.ISupportInitialize)TodoListsGrid).BeginInit();
             SuspendLayout();
+
             // 
             // TodoListsGrid
             // 
@@ -48,6 +43,7 @@
             TodoListsGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             TodoListsGrid.Size = new Size(419, 432);
             TodoListsGrid.TabIndex = 0;
+
             // 
             // IdLabel
             // 
@@ -57,14 +53,15 @@
             IdLabel.Size = new Size(21, 15);
             IdLabel.TabIndex = 1;
             IdLabel.Text = "ID:";
+
             // 
             // IdField
             // 
             IdField.Location = new Point(507, 13);
             IdField.Name = "IdField";
-            IdField.ReadOnly = true;
             IdField.Size = new Size(281, 23);
             IdField.TabIndex = 2;
+
             // 
             // TitleLabel
             // 
@@ -74,6 +71,7 @@
             TitleLabel.Size = new Size(33, 15);
             TitleLabel.TabIndex = 3;
             TitleLabel.Text = "Title:";
+
             // 
             // TitleField
             // 
@@ -81,6 +79,7 @@
             TitleField.Name = "TitleField";
             TitleField.Size = new Size(281, 23);
             TitleField.TabIndex = 4;
+
             // 
             // NewButton
             // 
@@ -90,6 +89,7 @@
             NewButton.TabIndex = 5;
             NewButton.Text = "New";
             NewButton.UseVisualStyleBackColor = true;
+
             // 
             // SaveButton
             // 
@@ -99,6 +99,7 @@
             SaveButton.TabIndex = 6;
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
+
             // 
             // DeleteButton
             // 
@@ -108,12 +109,73 @@
             DeleteButton.TabIndex = 7;
             DeleteButton.Text = "Delete";
             DeleteButton.UseVisualStyleBackColor = true;
+
+            // 
+            // WeightLabel
+            // 
+            WeightLabel.AutoSize = true;
+            WeightLabel.Location = new Point(460, 130);
+            WeightLabel.Name = "WeightLabel";
+            WeightLabel.Size = new Size(52, 15);
+            WeightLabel.TabIndex = 8;
+            WeightLabel.Text = "Weight:";
+
+            // 
+            // WeightField
+            // 
+            WeightField.Location = new Point(507, 127);
+            WeightField.Name = "WeightField";
+            WeightField.Size = new Size(281, 23);
+            WeightField.TabIndex = 9;
+
+            // 
+            // BloodPressureLabel
+            // 
+            BloodPressureLabel.AutoSize = true;
+            BloodPressureLabel.Location = new Point(460, 160);
+            BloodPressureLabel.Name = "BloodPressureLabel";
+            BloodPressureLabel.Size = new Size(93, 15);
+            BloodPressureLabel.TabIndex = 10;
+            BloodPressureLabel.Text = "Blood Pressure:";
+
+            // 
+            // BloodPressureField
+            // 
+            BloodPressureField.Location = new Point(507, 157);
+            BloodPressureField.Name = "BloodPressureField";
+            BloodPressureField.Size = new Size(281, 23);
+            BloodPressureField.TabIndex = 11;
+
+            // 
+            // BloodSugarLabel
+            // 
+            BloodSugarLabel.AutoSize = true;
+            BloodSugarLabel.Location = new Point(460, 190);
+            BloodSugarLabel.Name = "BloodSugarLabel";
+            BloodSugarLabel.Size = new Size(75, 15);
+            BloodSugarLabel.TabIndex = 12;
+            BloodSugarLabel.Text = "Blood Sugar:";
+
+            // 
+            // BloodSugarField
+            // 
+            BloodSugarField.Location = new Point(507, 187);
+            BloodSugarField.Name = "BloodSugarField";
+            BloodSugarField.Size = new Size(281, 23);
+            BloodSugarField.TabIndex = 13;
+
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(BloodSugarField);
+            Controls.Add(BloodSugarLabel);
+            Controls.Add(BloodPressureField);
+            Controls.Add(BloodPressureLabel);
+            Controls.Add(WeightField);
+            Controls.Add(WeightLabel);
             Controls.Add(DeleteButton);
             Controls.Add(SaveButton);
             Controls.Add(NewButton);
@@ -129,8 +191,6 @@
             PerformLayout();
         }
 
-        #endregion
-
         private DataGridView TodoListsGrid;
         private Label IdLabel;
         private TextBox IdField;
@@ -139,5 +199,12 @@
         private Button NewButton;
         private Button SaveButton;
         private Button DeleteButton;
+
+        private Label WeightLabel;
+        private TextBox WeightField;
+        private Label BloodPressureLabel;
+        private TextBox BloodPressureField;
+        private Label BloodSugarLabel;
+        private TextBox BloodSugarField;
     }
 }
