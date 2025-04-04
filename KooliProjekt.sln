@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WpfApp.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WinFormsApp", "KooliProjekt.WinFormsApp\KooliProjekt.WinFormsApp.csproj", "{26FC954E-709E-44CE-A576-C8987E46581D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KooliProjekt.WinFormsPresenter.UnitTests", "KooliProjekt.WinFormsPresenter.UnitTests\KooliProjekt.WinFormsPresenter.UnitTests.csproj", "{BBBE70CC-2212-4DC5-87C7-0DAD58A394FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{26FC954E-709E-44CE-A576-C8987E46581D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26FC954E-709E-44CE-A576-C8987E46581D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26FC954E-709E-44CE-A576-C8987E46581D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBBE70CC-2212-4DC5-87C7-0DAD58A394FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBBE70CC-2212-4DC5-87C7-0DAD58A394FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBBE70CC-2212-4DC5-87C7-0DAD58A394FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBBE70CC-2212-4DC5-87C7-0DAD58A394FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
