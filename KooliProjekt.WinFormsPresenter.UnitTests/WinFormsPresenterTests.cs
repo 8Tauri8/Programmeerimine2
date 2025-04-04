@@ -25,8 +25,10 @@ namespace KooliProjekt.WinFormsApp.Tests
         {
             // Arrange
             var healthDatas = new List<HealthData> { new HealthData() };
-            var response = new Result<List<HealthData>>(healthDatas);
-            _mockApiClient.Setup(api => api.List()).ReturnsAsync(response);
+            var result = new Result<List<HealthData>>(healthDatas, null);  // No error, just data
+
+            // Mock the API client response
+            _mockApiClient.Setup(api => api.List()).ReturnsAsync(result);
 
             // Act
             await _presenter.LoadHealthDataAsync();
@@ -39,19 +41,15 @@ namespace KooliProjekt.WinFormsApp.Tests
         public async Task LoadHealthDataAsync_HasError_ShowsMessageBox()
         {
             // Arrange
-            var response = new Result<List<HealthData>>
-            {
-                Error = "Test error"
-            };
-            _mockApiClient.Setup(api => api.List()).ReturnsAsync(response);
+            var result = new Result<List<HealthData>>(null, "Test error");  // No data, error message
+
+            // Mock the API client response
+            _mockApiClient.Setup(api => api.List()).ReturnsAsync(result);
 
             // Act
             await _presenter.LoadHealthDataAsync();
 
             // Assert
-            // Simuleeri MessageBox.Show kutsutud olekut
-            // NB! MessageBox.Show ei ole testitav otse, võib kasutada wrapperit või mockida.
-            // Siin ei saa otse testida, aga võib kontrollida, kas _mockApiClient.List() on kutsutud.
             _mockApiClient.Verify(api => api.List(), Times.Once);
         }
 

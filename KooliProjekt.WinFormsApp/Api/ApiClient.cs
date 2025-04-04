@@ -15,30 +15,31 @@ namespace KooliProjekt.WinFormsApp.Api
 
         public async Task<Result<List<HealthData>>> List()
         {
-            var result = new Result<List<HealthData>>();
-
             try
             {
-                result.Value = await _httpClient.GetFromJsonAsync<List<HealthData>>("healthdata");
+                // Attempt to fetch data from the API
+                var healthDataList = await _httpClient.GetFromJsonAsync<List<HealthData>>("healthdata");
+
+                // Return the result with data and no error
+                return new Result<List<HealthData>>(healthDataList, null);  // Success case
             }
             catch (HttpRequestException ex)
             {
-                if (ex.HttpRequestError == HttpRequestError.ConnectionError)
-                {
-                    result.Error = "Ei saa serveriga ühendust. Palun proovi hiljem uuesti.";
-                }
-                else
-                {
-                    result.Error = ex.Message;
-                }
+                // Handle connection errors
+                string errorMessage = ex.HttpRequestError == HttpRequestError.ConnectionError
+                    ? "Ei saa serveriga ühendust. Palun proovi hiljem uuesti."
+                    : ex.Message;
+
+                // Return the result with error message
+                return new Result<List<HealthData>>(null, errorMessage);  // Error case
             }
             catch (Exception ex)
             {
-                result.Error = ex.Message;
+                // Catch any other unexpected errors
+                return new Result<List<HealthData>>(null, ex.Message);  // Error case
             }
-
-            return result;
         }
+
 
         public async Task Save(HealthData list)
         {

@@ -23,7 +23,7 @@ namespace KooliProjekt.WinFormsApp
                 var response = await _apiClient.List();
                 if (!response.HasError)
                 {
-                    _view.HealthDatas = response.Value;
+                    _view.HealthDatas = response.Data; // Use Data instead of Value
                 }
                 else
                 {

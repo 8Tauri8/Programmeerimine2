@@ -1,7 +1,17 @@
 ﻿namespace KooliProjekt.WinFormsApp.Api
 {
-    public class Result<T> : Result
+    public class Result<T>
     {
-        public T Value { get; set; }
+        public T Data { get; set; }
+        public string Error { get; set; }
+
+        public Result(T data, string error = null)
+        {
+            Data = data;
+            Error = error;
+        }
+
+        // Add this HasError property
+        public bool HasError => !string.IsNullOrEmpty(Error);
     }
 }
