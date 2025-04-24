@@ -1,7 +1,55 @@
 ﻿@page "/"
+@inject HttpClient Http
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Health Data</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Health Data</h1>
 
-Welcome to your new app.
+<p>This component demonstrates fetching health data from the API.</p>
+
+@if (healthData == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Weight</th>
+                <th>Blood Pressure</th>
+                <th>Blood Sugar</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in healthData)
+            {
+                <tr>
+                    <td>@item.id</td>
+                    <td>@item.Weight</td>
+                    <td>@item.Blood_pressure</td>
+                    <td>@item.Blood_sugar</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<HealthData>? healthData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the health data from the API
+        healthData = await Http.GetFromJsonAsync<List<HealthData>>(""); // Empty path as the base URL is defined in Program.cs
+    }
+
+    public class HealthData
+    {
+        public int id { get; set; }
+        public float Weight { get; set; }
+        public float Blood_pressure { get; set; }
+        public float Blood_sugar { get; set; }
+    }
+}

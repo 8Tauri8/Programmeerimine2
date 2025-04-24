@@ -15,11 +15,12 @@ namespace KooliProjekt.Controllers
             _healthDataService = healthDataService;
         }
 
+        // GET: api/HealthData
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HealthData>>> Get()
         {
-            var result = await _healthDataService.List(1, 10000);
-            return Ok(result.Results);
+            var result = await _healthDataService.List(1, 10000); // Adjust as per your paging needs
+            return Ok(result.Results); // Assuming List() returns paged data
         }
 
         // GET: api/HealthData/5
@@ -27,12 +28,10 @@ namespace KooliProjekt.Controllers
         public async Task<ActionResult<HealthData>> Get(int id)
         {
             var healthData = await _healthDataService.Get(id);
-
             if (healthData == null)
             {
                 return NotFound();
             }
-
             return healthData;
         }
 
@@ -40,23 +39,30 @@ namespace KooliProjekt.Controllers
         [HttpPost]
         public async Task<ActionResult<HealthData>> Post([FromBody] HealthData healthData)
         {
-            await _healthDataService.Save(healthData);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return validation errors if the model is invalid
+            }
 
+            await _healthDataService.Save(healthData);
             return CreatedAtAction(nameof(Get), new { id = healthData.id }, healthData);
         }
 
         // PUT: api/HealthData/5
-        // PUT api/<TodoListsApiController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] HealthData list)
+        public async Task<IActionResult> Put(int id, [FromBody] HealthData healthData)
         {
-            if (id != list.id)
+            if (id != healthData.id)
             {
                 return BadRequest();
             }
 
-            await _healthDataService.Save(list);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return validation errors if the model is invalid
+            }
 
+            await _healthDataService.Save(healthData);
             return Ok();
         }
 
@@ -71,7 +77,6 @@ namespace KooliProjekt.Controllers
             }
 
             await _healthDataService.Delete(id);
-
             return NoContent();
         }
     }
