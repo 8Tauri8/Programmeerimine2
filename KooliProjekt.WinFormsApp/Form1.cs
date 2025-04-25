@@ -26,7 +26,7 @@ namespace KooliProjekt.WinFormsApp
         public Form1()
         {
             InitializeComponent();
-            _apiClient = new ApiClient();
+            _apiClient = new ApiClient(new HttpClient { BaseAddress = new Uri("https://localhost:7136/api/") });
 
             Presenter = new HealthDataPresenter(this, _apiClient);
 

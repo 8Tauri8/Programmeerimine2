@@ -28,7 +28,7 @@ else
                     <td>@item.Blood_pressure</td>
                     <td>@item.Blood_sugar</td>
                     <td>
-                        <button @onclick="() => Delete(item.id)">Delete</button>
+                        <button class="btn btn-danger" @onclick="() => Delete(item.id)">Delete</button>
                     </td>
                 </tr>
             }
@@ -37,7 +37,7 @@ else
 }
 
 @code {
-    private List<HealthData>? healthData;
+    private List<HealthData> healthData;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,8 +48,8 @@ else
         }
         else
         {
-            // Handle error (e.g., display error message)
-            Console.WriteLine($"Error loading data: {result.Error}");
+            // Handle error (e.g., show message)
+            healthData = new List<HealthData>();
         }
     }
 
@@ -60,10 +60,6 @@ else
         if (!result.HasError)
         {
             healthData = result.Data;
-        }
-        else
-        {
-            Console.WriteLine($"Error loading data: {result.Error}");
         }
     }
 }

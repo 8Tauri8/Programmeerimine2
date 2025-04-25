@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Json;
-
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace KooliProjekt.PublicAPI.Api
 {
@@ -8,9 +9,9 @@ namespace KooliProjekt.PublicAPI.Api
     {
         private readonly HttpClient _httpClient;
 
-        public ApiClient()
+        public ApiClient(HttpClient httpClient)
         {
-            _httpClient = new HttpClient();
+            _httpClient = httpClient;
             _httpClient.BaseAddress = new Uri("https://localhost:7136/api/");
         }
 
@@ -18,45 +19,57 @@ namespace KooliProjekt.PublicAPI.Api
         {
             try
             {
-                // Attempt to fetch data from the API
                 var healthDataList = await _httpClient.GetFromJsonAsync<List<HealthData>>("healthdata");
-
-                // Return the result with data and no error
-                return new Result<List<HealthData>>(healthDataList, null);  // Success case
+                return new Result<List<HealthData>> { Data = healthDataList };
             }
             catch (HttpRequestException ex)
             {
-                // Handle connection errors
-                string errorMessage = ex.HttpRequestError == HttpRequestError.ConnectionError
-                    ? "Ei saa serveriga ühendust. Palun proovi hiljem uuesti."
-                    : ex.Message;
-
-                // Return the result with error message
-                return new Result<List<HealthData>>(null, errorMessage);  // Error case
-            }
-            catch (Exception ex)
-            {
-                // Catch any other unexpected errors
-                return new Result<List<HealthData>>(null, ex.Message);  // Error case
+                var result = new Result<List<HealthData>>();
+                result.AddError("_", "Failed to connect to the API.");
+                return result;
             }
         }
 
-
-        public async Task Save(HealthData list)
+        public async Task<Result> Save(HealthData healthData)
         {
-            if(list.id == 0)
+            HttpResponseMessage response;
+            if (healthData.id == 0)
             {
-                await _httpClient.PostAsJsonAsync("healthdata", list);
+                response = await _httpClient.PostAsJsonAsync("healthdata", healthData);
             }
             else
             {
-                await _httpClient.PutAsJsonAsync("healthdata/" + list.id, list);
+                response = await _httpClient.PutAsJsonAsync($"healthdata/{healthData.id}", healthData);
             }
+
+            var result = new Result();
+            if (!response.IsSuccessStatusCode)
+            {
+                // Attempt to read error details from the response
+                try
+                {
+                    var errorResult = await response.Content.ReadFromJsonAsync<Result>();
+                    if (errorResult != null && errorResult.Errors.Count > 0)
+                    {
+                        result.Errors = errorResult.Errors;
+                    }
+                    else
+                    {
+                        result.AddError("_", $"API returned an error: {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    result.AddError("_", $"Failed to read error from API: {ex.Message}");
+                }
+            }
+
+            return result;
         }
 
         public async Task Delete(int id)
         {
-            await _httpClient.DeleteAsync("healthdata/" + id);
+            await _httpClient.DeleteAsync($"healthdata/{id}");
         }
     }
 }

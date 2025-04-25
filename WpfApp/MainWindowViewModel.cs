@@ -16,10 +16,6 @@ namespace WpfApp
 
         private readonly IApiClient _apiClient;
 
-        public MainWindowViewModel() : this(new ApiClient())
-        {
-        }
-
         public MainWindowViewModel(IApiClient apiClient)
         {
             _apiClient = apiClient;

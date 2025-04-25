@@ -1,6 +1,7 @@
 using KooliProjekt.WinFormsApp;
 using KooliProjekt.PublicAPI.Api;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -25,7 +26,11 @@ namespace KooliProjekt.WinFormsApp.Tests
         {
             // Arrange
             var healthDatas = new List<HealthData> { new HealthData() };
-            var result = new Result<List<HealthData>>(healthDatas, null);  // No error, just data
+            var result = new Result<List<HealthData>>
+            {
+                Data = healthDatas,
+                Error = null
+            };
 
             // Mock the API client response
             _mockApiClient.Setup(api => api.List()).ReturnsAsync(result);
@@ -41,7 +46,11 @@ namespace KooliProjekt.WinFormsApp.Tests
         public async Task LoadHealthDataAsync_HasError_ShowsMessageBox()
         {
             // Arrange
-            var result = new Result<List<HealthData>>(null, "Test error");  // No data, error message
+            var result = new Result<List<HealthData>>
+            {
+                Data = null,
+                Error = "Test error"
+            };
 
             // Mock the API client response
             _mockApiClient.Setup(api => api.List()).ReturnsAsync(result);
@@ -51,6 +60,7 @@ namespace KooliProjekt.WinFormsApp.Tests
 
             // Assert
             _mockApiClient.Verify(api => api.List(), Times.Once);
+            // You can add verification for showing message box if implemented
         }
 
         [Fact]

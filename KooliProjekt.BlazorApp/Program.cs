@@ -1,7 +1,10 @@
-using KooliProjekt.BlazorApp;
 using KooliProjekt.PublicAPI.Api;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace KooliProjekt.BlazorApp
 {
@@ -13,8 +16,8 @@ namespace KooliProjekt.BlazorApp
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7136/api/") });
             builder.Services.AddScoped<IApiClient, ApiClient>();
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7136/api/HealthData/") });
 
             await builder.Build().RunAsync();
         }

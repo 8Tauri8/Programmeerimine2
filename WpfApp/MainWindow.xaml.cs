@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp;
 using KooliProjekt.PublicAPI.Api;
+using System.Net.Http;
 
 namespace WpfApp;
 
@@ -27,7 +28,11 @@ public partial class MainWindow : Window
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        var viewModel = new MainWindowViewModel();
+        var httpClient = new HttpClient { BaseAddress = new Uri("https://localhost:7136/api/") };
+        var apiClient = new ApiClient(httpClient);
+
+        var viewModel = new MainWindowViewModel(apiClient);
+
         viewModel.ConfirmDelete = _ =>
         {
             var result = MessageBox.Show(
@@ -53,6 +58,7 @@ public partial class MainWindow : Window
 
         await viewModel.Load();
     }
+
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
