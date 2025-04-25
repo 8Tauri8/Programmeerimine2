@@ -1,11 +1,7 @@
 ﻿@page "/"
-@inject HttpClient Http
+@inject IApiClient ApiClient
 
 <PageTitle>Health Data</PageTitle>
-
-<h1>Health Data</h1>
-
-<p>This component demonstrates fetching health data from the API.</p>
 
 @if (healthData == null)
 {
@@ -20,6 +16,7 @@ else
                 <th>Weight</th>
                 <th>Blood Pressure</th>
                 <th>Blood Sugar</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -30,6 +27,9 @@ else
                     <td>@item.Weight</td>
                     <td>@item.Blood_pressure</td>
                     <td>@item.Blood_sugar</td>
+                    <td>
+                        <button @onclick="() => Delete(item.id)">Delete</button>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -41,15 +41,29 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the health data from the API
-        healthData = await Http.GetFromJsonAsync<List<HealthData>>(""); // Empty path as the base URL is defined in Program.cs
+        var result = await ApiClient.List();
+        if (!result.HasError)
+        {
+            healthData = result.Data;
+        }
+        else
+        {
+            // Handle error (e.g., display error message)
+            Console.WriteLine($"Error loading data: {result.Error}");
+        }
     }
 
-    public class HealthData
+    private async Task Delete(int id)
     {
-        public int id { get; set; }
-        public float Weight { get; set; }
-        public float Blood_pressure { get; set; }
-        public float Blood_sugar { get; set; }
+        await ApiClient.Delete(id);
+        var result = await ApiClient.List();
+        if (!result.HasError)
+        {
+            healthData = result.Data;
+        }
+        else
+        {
+            Console.WriteLine($"Error loading data: {result.Error}");
+        }
     }
 }

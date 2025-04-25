@@ -1,0 +1,43 @@
+﻿@page "/healthdata/edit/{id:int}"
+@inject IApiClient ApiClient
+@inject NavigationManager Navigation
+
+<PageTitle>Muuda kirjet</PageTitle>
+
+@if (healthData == null)
+{
+    <p>Laadin...</p>
+}
+else
+{
+    <EditForm Model="@healthData" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+
+        <!-- Sama vormi struktuur nagu lisamise puhul -->
+        <!-- ... -->
+
+        <button type="submit" class="btn btn-primary">Uuenda</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private HealthData? healthData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await ApiClient.List();
+        healthData = result.Data?.FirstOrDefault(h => h.id == Id);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (healthData != null)
+        {
+            await ApiClient.Save(healthData);
+            Navigation.NavigateTo("/");
+        }
+    }
+}

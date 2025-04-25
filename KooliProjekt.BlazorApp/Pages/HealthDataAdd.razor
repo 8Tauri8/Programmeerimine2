@@ -1,0 +1,38 @@
+﻿@page "/healthdata/add"
+@inject NavigationManager Navigation
+@inject IApiClient ApiClient
+
+<PageTitle>Lisa uus</PageTitle>
+
+<h3>Lisa uus terviseandmed</h3>
+
+<EditForm Model="@healthData" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label>Kaal (kg):</label>
+        <InputNumber @bind-Value="@healthData.Weight" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Verrerõhk (mmHg):</label>
+        <InputNumber @bind-Value="@healthData.Blood_pressure" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Veresuhkur (mmol/L):</label>
+        <InputNumber @bind-Value="@healthData.Blood_sugar" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Salvesta</button>
+</EditForm>
+
+@code {
+    private HealthData healthData = new();
+
+    private async Task HandleValidSubmit()
+    {
+        await ApiClient.Save(healthData);
+        Navigation.NavigateTo("/");
+    }
+}
