@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp;
-using WpfApp.Api;
+using KooliProjekt.PublicAPI.Api;
 
 namespace WpfApp;
 

@@ -1,7 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using KooliProjekt.PublicAPI.Api;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
-using WpfApp.Api;
-using WpfApp.Api;
 using WpfApp;
 
 namespace WpfApp
@@ -90,7 +89,7 @@ namespace WpfApp
                 return;
             }
 
-            foreach (var list in lists.Value)
+            foreach (var list in lists.Data)
             {
                 Lists.Add(list);
             }
