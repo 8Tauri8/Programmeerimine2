@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Moq;
+using KooliProjekt.PublicAPI.Api;
 using WpfApp;
-using WpfApp.Api;
 
 namespace KooliProjekt.WpfApp.UnitTests
 {
@@ -15,14 +15,11 @@ namespace KooliProjekt.WpfApp.UnitTests
             // Arrange
             var mockApiClient = new Mock<IApiClient>();
             mockApiClient.Setup(client => client.List())
-                .ReturnsAsync(new Result<List<HealthData>>
+                .ReturnsAsync(new Result<List<HealthData>>(new List<HealthData>
                 {
-                    Value = new List<HealthData>
-                    {
-                        new HealthData { id = 1, Weight = 70.5f, Blood_pressure = 120.0f, Blood_sugar = 90.0f },
-                        new HealthData { id = 2, Weight = 80.0f, Blood_pressure = 130.0f, Blood_sugar = 100.0f }
-                    }
-                });
+                    new HealthData { id = 1, Weight = 70.5f, Blood_pressure = 120.0f, Blood_sugar = 90.0f },
+                    new HealthData { id = 2, Weight = 80.0f, Blood_pressure = 130.0f, Blood_sugar = 100.0f }
+                }));
 
             var viewModel = new MainWindowViewModel(mockApiClient.Object);
 

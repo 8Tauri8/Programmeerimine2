@@ -1,5 +1,5 @@
 using KooliProjekt.WinFormsApp;
-using KooliProjekt.WinFormsApp.Api;
+using KooliProjekt.PublicAPI.Api;
 using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
