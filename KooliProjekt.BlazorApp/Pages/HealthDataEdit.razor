@@ -13,23 +13,20 @@ else
     <EditForm Model="@healthData" OnValidSubmit="@HandleValidSubmit">
         <DataAnnotationsValidator />
 
-        <!-- Sama vormi struktuur nagu lisamise puhul -->
-        <!-- ... -->
-
         <button type="submit" class="btn btn-primary">Uuenda</button>
     </EditForm>
 }
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public int id { get; set; }
 
     private HealthData? healthData;
 
     protected override async Task OnInitializedAsync()
     {
         var result = await ApiClient.List();
-        healthData = result.Data?.FirstOrDefault(h => h.id == Id);
+        healthData = result.Data?.FirstOrDefault(h => h.id == id);
     }
 
     private async Task HandleValidSubmit()
