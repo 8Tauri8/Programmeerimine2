@@ -7,7 +7,6 @@ namespace KooliProjekt.PublicAPI.Api
         public int id { get; set; }
 
         [Required(ErrorMessage = "Weight is required")]
-        [Range(0, 300, ErrorMessage = "Weight must be between 0 and 300")]
         public float Weight { get; set; }
 
         [Required(ErrorMessage = "Blood pressure is required")]
