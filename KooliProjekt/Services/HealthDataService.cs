@@ -53,17 +53,16 @@ namespace KooliProjekt.Services
         {
             if (healthData.id == 0)
             {
-                // Add a new health data entry when the id is 0 (not yet saved in the DB)
                 _context.HealthData.Add(healthData);
             }
             else
             {
                 var existingHealthData = await _context.HealthData.FindAsync(healthData.id);
-
                 if (existingHealthData != null)
                 {
-                    // If it exists, update the entity
-                    _context.Entry(existingHealthData).State = EntityState.Modified;
+                    existingHealthData.Weight = healthData.Weight;
+                    existingHealthData.Blood_pressure = healthData.Blood_pressure;
+                    existingHealthData.Blood_sugar = healthData.Blood_sugar;
                 }
                 else
                 {

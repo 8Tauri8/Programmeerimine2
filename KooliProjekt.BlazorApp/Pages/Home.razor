@@ -28,6 +28,7 @@ else
                     <td>@item.Blood_pressure</td>
                     <td>@item.Blood_sugar</td>
                     <td>
+                        <button class="btn btn-primary me-2" @onclick="@(() => NavigateToEdit(item.id))">Edit</button>
                         <button class="btn btn-danger" @onclick="() => Delete(item.id)">Delete</button>
                     </td>
                 </tr>
@@ -61,5 +62,13 @@ else
         {
             healthData = result.Data;
         }
+    }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private void NavigateToEdit(int id)
+    {
+        Navigation.NavigateTo($"/healthdata/edit/{id}");
     }
 }

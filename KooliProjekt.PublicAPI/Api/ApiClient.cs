@@ -71,5 +71,8 @@ namespace KooliProjekt.PublicAPI.Api
         {
             await _httpClient.DeleteAsync($"healthdata/{id}");
         }
+
+
+
     }
 }
